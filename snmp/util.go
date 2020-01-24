@@ -1,0 +1,51 @@
+package snmp
+
+func IsOid(oid string) bool {
+	if oid == "" || oid[:1] != "." || len(oid) < 2 {
+		return false
+	}
+
+	lastChar := rune(oid[0])
+
+	for _, char := range oid[1:] {
+		if char == '.' {
+			if lastChar == '.' {
+				return false
+			}
+		} else if !(char >= '0' && char <= '9') {
+			return false
+		}
+		lastChar = char
+	}
+
+	if lastChar == '.' {
+		return false
+	}
+
+	return true
+}
+
+// IsOidPartOf tests if an OID is equal of below another OID
+func IsOidPartOf(oid string, baseOid string) bool {
+	if ! IsOid(oid) || ! IsOid(baseOid) {
+		return false
+	}
+
+	lenBase := len(baseOid)
+	if oid[:lenBase] == baseOid {
+		if len(oid) == lenBase || oid[lenBase:lenBase+1] == "." {
+			return true
+		}
+	}
+
+	return false
+}
+
+func GetSubOid(oid string, baseOid string) string {
+	if ! IsOid(oid) || ! IsOid(baseOid) || ! IsOidPartOf(oid, baseOid) {
+		return ""
+	}
+
+	l := len(baseOid)
+	return oid[l+1:]
+}
