@@ -8,4 +8,7 @@ clean:
 
 build: check_hp_disk_firmware
 check_hp_disk_firmware: main.go
-	go build -o $@ -ldflags "-X main.GitCommit=$(GIT_COMMIT)"
+	go build -v -o $@ -ldflags "-X main.GitCommit=$(GIT_COMMIT)"
+
+test:
+	go test -v ./...
