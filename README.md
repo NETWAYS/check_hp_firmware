@@ -12,8 +12,8 @@ Please see [support document from HPE](https://support.hpe.com/hpsc/doc/public/d
 
 ## Usage
 
-    $ ./check_hp_disk_firmware --help
-    Usage of ./check_hp_disk_firmware:
+Arguments:
+
       -H, --hostname string        SNMP host (default "localhost")
       -c, --community string       SNMP community (default "public")
       -P, --protocol string        SNMP protocol (default "2c")
@@ -21,6 +21,7 @@ Please see [support document from HPE](https://support.hpe.com/hpsc/doc/public/d
           --snmpwalk-file string   Read output from snmpwalk
       -4, --ipv4                   Use IPv4
       -6, --ipv6                   Use IPv6
+      -V, --version                Show version
           --debug                  Enable debug output
 
 Simply run the command:
@@ -77,6 +78,10 @@ You can download or build the project locally with go:
     [OK] (4.79) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.80) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.81) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
+
+## Limitations
+
+* No SNMPv3 support is implemented
 
 ## Contribute
 
