@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NETWAYS/check_hp_disk_firmware/hp"
 	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
@@ -10,6 +11,15 @@ import (
 	"os"
 	"time"
 )
+
+const Readme = `
+Icinga / Nagios check plugin to verify SSD disks are not affected by the a00092491 bulletin from HPE.
+
+HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
+Prevent Drive Failure at 32,768 Hours of Operation
+
+Please see support document from HPE: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
+`
 
 // Check for HP PhysicalDrive CVEs via SNMP
 func main() {
@@ -26,7 +36,18 @@ func main() {
 	ipv4 := flagSet.BoolP("ipv4", "4", false, "Use IPv4")
 	ipv6 := flagSet.BoolP("ipv6", "6", false, "Use IPv6")
 
+	version := flagSet.BoolP("version", "V", false, "Show version")
+
 	debug := flagSet.Bool("debug", false, "Enable debug output")
+
+	flagSet.Usage = func() {
+		fmt.Printf("Usage: %s [-H <hostname>] [-c <community>]\n", os.Args[0])
+		fmt.Println(Readme)
+		fmt.Printf("Version: %s\n", buildVersion())
+		fmt.Println()
+		fmt.Println("Arguments:")
+		flagSet.PrintDefaults()
+	}
 
 	var err error
 	err = flagSet.Parse(os.Args[1:])
@@ -35,6 +56,11 @@ func main() {
 			nagios.ExitError(err)
 		}
 		os.Exit(3)
+	}
+
+	if *version {
+		fmt.Printf("%s version %s\n", Project, buildVersion())
+		os.Exit(nagios.Unknown)
 	}
 
 	if *debug {
