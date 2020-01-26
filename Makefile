@@ -14,7 +14,8 @@ build:
 	GOOS=linux GOARCH=386 $(GO_BUILD) -o build/check_hp_disk_firmware-i386
 
 tarball: build
-	cd build && tar cf check_hp_disk_firmware.tar.gz check_hp_disk_firmware-*
+	cp icinga2.conf build/
+	cd build && tar cf check_hp_disk_firmware.tar.gz check_hp_disk_firmware-* icinga2.conf
 
 test:
 	go test -v ./...

@@ -34,6 +34,8 @@ This is a golang project, either download the binary from the releases:
 
 https://github.com/NETWAYS/check_hp_disk_firmware/releases
 
+Also see the included [CheckCommand for Icinga 2](icinga2.conf).
+
 You can download or build the project locally with go:
 
     $ go get github.com/NETWAYS/check_hp_cve
