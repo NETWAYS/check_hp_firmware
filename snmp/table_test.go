@@ -14,6 +14,10 @@ func init() {
 }
 
 func TestSnmpTable_Walk(t *testing.T) {
+	if os.Getenv("NETWORK_TESTS_ENABLED") == "" {
+		return
+	}
+
 	client := getSnmpClientFromEnv(t)
 
 	table := &Table{

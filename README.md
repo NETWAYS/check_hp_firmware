@@ -1,6 +1,8 @@
 check_hp_disk_firmware
 =================
 
+![Go build](https://github.com/NETWAYS/check_hp_disk_firmware/workflows/Go/badge.svg?branch=master)
+
 Icinga / Nagios check plugin to verify SSD disks are not affected by the `a00092491` bulletin from HPE.
 
 > HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
