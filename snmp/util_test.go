@@ -45,15 +45,8 @@ func getSnmpClientFromEnv(t *testing.T) *gosnmp.GoSNMP {
 	c.Target = getEnvDefault("SNMP_HOST", "localhost")
 	c.Community = getEnvDefault("SNMP_COMMUNITY", "public")
 
-	switch getEnvDefault("SNMP_VERSION", "2") {
-	case "1":
-		c.Version = gosnmp.Version1
-	case "2":
-		c.Version = gosnmp.Version2c
-	case "3":
-		c.Version = gosnmp.Version3
-		// TODO: support v3?
-		t.Fatal("SNMPv3 config not implemented")
+	if err := SetVersion(&c, getEnvDefault("SNMP_VERSION", "2")); err != nil {
+		t.Fatal(err)
 	}
 
 	c.Retries = 1

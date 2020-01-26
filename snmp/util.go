@@ -1,5 +1,10 @@
 package snmp
 
+import (
+	"fmt"
+	"github.com/soniah/gosnmp"
+)
+
 func IsOid(oid string) bool {
 	if oid == "" || oid[:1] != "." || len(oid) < 2 {
 		return false
@@ -48,4 +53,21 @@ func GetSubOid(oid string, baseOid string) string {
 
 	l := len(baseOid)
 	return oid[l+1:]
+}
+
+func SetVersion(client *gosnmp.GoSNMP, version string) error {
+	switch version {
+	case "1":
+		client.Version = gosnmp.Version1
+	case "2", "2c":
+		client.Version = gosnmp.Version2c
+	case "3":
+		client.Version = gosnmp.Version3
+		// TODO: support v3?
+		return fmt.Errorf("SNMPv3 config not implemented")
+	default:
+		return fmt.Errorf("unknown SNMP version: %s", version)
+	}
+
+	return nil
 }

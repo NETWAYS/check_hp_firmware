@@ -58,6 +58,10 @@ func (t *Table) Walk() error {
 // TODO: this might not apply to all tables
 func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 	subOid := GetSubOid(data.Name, t.Oid)
+	if subOid == "" {
+		// other data in walk, ignoring it
+		return nil
+	}
 	parts := strings.Split(subOid, ".")
 
 	if len(parts) < 3 {

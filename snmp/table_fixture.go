@@ -41,13 +41,25 @@ func (t *Table) addSnmpWalkLine(line string) error {
 	}
 
 	oid := parts[0]
-	split := strings.SplitN(parts[1], ": ", 2)
-	if len(split) != 2 {
-		return fmt.Errorf("could not split type from value: %v", parts[1])
-	}
 
-	netSnmpType := split[0]
-	bareValue := split[1]
+	var netSnmpType string
+	var bareValue string
+
+	if parts[1] == "\"\"" {
+		// snmpwalk just lists "", which basically means null
+		netSnmpType = "NULL"
+	} else if len(parts[1]) > 17 && parts[1][:17] == "No more variables" {
+		// end of walk
+		return nil
+	} else {
+		split := strings.SplitN(parts[1], ": ", 2)
+		if len(split) != 2 {
+			return fmt.Errorf("could not split type from value: %v", parts[1])
+		}
+
+		netSnmpType = split[0]
+		bareValue = split[1]
+	}
 
 	var snmpType gosnmp.Asn1BER
 	var value interface{}
@@ -65,8 +77,10 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		snmpType = gosnmp.OctetString
 		value = strings.Trim(bareValue, "\"")
 	case "Hex-STRING":
-		value, err = hex.DecodeString(bareValue)
-		if err != nil {}
+		hexString := strings.Join(strings.Split(bareValue, " "), "")
+		var bytes []byte
+		bytes, err = hex.DecodeString(hexString)
+		value = string(bytes)
 	case "Counter32":
 		snmpType = gosnmp.Counter32
 		value, err = strconv.ParseUint(bareValue, 10, 32)
@@ -80,6 +94,12 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		snmpType = gosnmp.TimeTicks
 		re := regexp.MustCompile(`^\(\d+\)`)
 		value = re.FindString(bareValue)
+	case "NULL":
+		snmpType = gosnmp.Null
+		value = []byte{}
+	case "IpAddress":
+		snmpType = gosnmp.IPAddress
+		value = bareValue
 	default:
 		return fmt.Errorf("can not parse net-snmp type %s of oid %s", netSnmpType, oid)
 	}
@@ -87,9 +107,6 @@ func (t *Table) addSnmpWalkLine(line string) error {
 	if err != nil {
 		return fmt.Errorf("could not parse %s from oid %s: %s", netSnmpType, oid, err)
 	}
-
-	// TODO: split type
-	// TODO: convert value to proper byte
 
 	data := gosnmp.SnmpPDU{
 		Name:  oid,
