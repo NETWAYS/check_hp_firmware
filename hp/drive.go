@@ -2,7 +2,7 @@ package hp
 
 import (
 	"fmt"
-	"github.com/NETWAYS/check_hp_cve/nagios"
+	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
 )
 
 type PhysicalDrive struct {

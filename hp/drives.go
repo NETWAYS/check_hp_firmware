@@ -2,7 +2,7 @@ package hp
 
 import (
 	"fmt"
-	"github.com/NETWAYS/check_hp_cve/snmp"
+	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
 	"github.com/soniah/gosnmp"
 	"io"
 	"sort"

@@ -1,4 +1,4 @@
-module github.com/NETWAYS/check_hp_cve
+module github.com/NETWAYS/check_hp_disk_firmware
 
 go 1.13
 
