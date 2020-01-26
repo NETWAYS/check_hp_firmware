@@ -3,6 +3,7 @@ package hp
 import (
 	"fmt"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
+	"github.com/mcuadros/go-version"
 	"github.com/soniah/gosnmp"
 	"io"
 	"sort"
@@ -40,8 +41,9 @@ func (t *CpqDaPhyDrvTable) ListIds() []string {
 		ids = append(ids, k)
 	}
 
-	// TODO: sort numerically
-	sort.Strings(ids)
+	sort.Slice(ids, func(i, j int) bool {
+		return version.Compare(ids[i], ids[j], "<")
+	})
 
 	return ids
 }
@@ -51,12 +53,12 @@ func (t *CpqDaPhyDrvTable) GetValue(id string, oid string) (interface{}, error) 
 	column := parts[len(parts)-1]
 
 	drive, ok := t.Snmp.Values[id]
-	if ! ok {
+	if !ok {
 		return nil, fmt.Errorf("could not find drive %s while looking for column %s", id, column)
 	}
 
 	value, ok := drive[column]
-	if ! ok {
+	if !ok {
 		return nil, fmt.Errorf("could not find column %s for drive %s", column, id)
 	}
 
