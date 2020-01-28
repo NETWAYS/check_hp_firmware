@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Build
-        run: make build tarball
+        run: make build
 
       - name: Test
         run: make test
@@ -26,5 +26,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: check_hp_disk_firmware.tar.gz
-          path: build/check_hp_disk_firmware.tar.gz
+          name: check_hp_disk_firmware
+          path: build

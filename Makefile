@@ -3,7 +3,7 @@ GO_BUILD := go build -v -ldflags "-X main.GitCommit=$(GIT_COMMIT)"
 
 .PHONY: all clean build test
 
-all: clean build tarball
+all: clean build
 
 distclean: clean
 clean:
@@ -11,10 +11,10 @@ clean:
 
 build:
 	GOOS=linux GOARCH=amd64 $(GO_BUILD) -o build/check_hp_disk_firmware-amd64 .
-	GOOS=linux GOARCH=386 $(GO_BUILD) -o build/check_hp_disk_firmware-i386
+	GOOS=linux GOARCH=386 $(GO_BUILD) -o build/check_hp_disk_firmware-i386 .
+	cp icinga2.conf build/
 
 tarball: build
-	cp icinga2.conf build/
 	cd build && tar cf check_hp_disk_firmware.tar.gz check_hp_disk_firmware-* icinga2.conf
 
 test:
