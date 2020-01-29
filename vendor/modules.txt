@@ -6,6 +6,8 @@ github.com/golang/mock/gomock
 github.com/konsorten/go-windows-terminal-sequences
 # github.com/mcuadros/go-version v0.0.0-20190830083331-035f6764e8d2
 github.com/mcuadros/go-version
+# github.com/mitchellh/go-ps v0.0.0-20190716172923-621e5597135b
+github.com/mitchellh/go-ps
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/sirupsen/logrus v1.4.2
