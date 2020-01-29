@@ -73,20 +73,20 @@ func (t *CpqDaPhyDrvTable) GetStringValue(id string, oid string) (string, error)
 	return fmt.Sprintf("%s", value), nil
 }
 
-func (t *CpqDaPhyDrvTable) GetUintValue(id string, oid string) (uint64, error) {
+func (t *CpqDaPhyDrvTable) GetUintValue(id string, oid string) (uint, error) {
 	value, err := t.GetValue(id, oid)
 	if err != nil {
 		return 0, err
 	}
 
-	return value.(uint64), nil
+	return value.(uint), nil
 }
 
-func (t *CpqDaPhyDrvTable) GetIntValue(id string, oid string) (int64, error) {
+func (t *CpqDaPhyDrvTable) GetIntValue(id string, oid string) (int, error) {
 	value, err := t.GetValue(id, oid)
 	if err != nil {
 		return 0, err
 	}
 
-	return value.(int64), nil
+	return value.(int), nil
 }

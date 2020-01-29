@@ -35,7 +35,7 @@ func LoadTableFromWalkOutput(oid string, stream io.Reader) (*Table, error) {
 func (t *Table) addSnmpWalkLine(line string) error {
 	parts := strings.SplitN(line, " = ", 2)
 
-	if len(parts) != 2 || ! IsOid(parts[0]) {
+	if len(parts) != 2 || !IsOid(parts[0]) {
 		// unknown line
 		return nil
 	}
@@ -72,7 +72,10 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		value = bareValue
 	case "INTEGER":
 		snmpType = gosnmp.Integer
-		value, err = strconv.ParseInt(bareValue, 10, 64)
+		i64, err := strconv.ParseInt(bareValue, 10, 32)
+		if err == nil {
+			value = int(i64)
+		}
 	case "STRING":
 		snmpType = gosnmp.OctetString
 		value = strings.Trim(bareValue, "\"")
@@ -83,13 +86,19 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		value = string(bytes)
 	case "Counter32":
 		snmpType = gosnmp.Counter32
-		value, err = strconv.ParseUint(bareValue, 10, 32)
+		i64, err := strconv.ParseUint(bareValue, 10, 32)
+		if err == nil {
+			value = uint(i64)
+		}
 	case "Counter64":
 		snmpType = gosnmp.Counter64
 		value, err = strconv.ParseUint(bareValue, 10, 64)
 	case "Gauge32":
 		snmpType = gosnmp.Gauge32
-		value, err = strconv.ParseUint(bareValue, 10, 32)
+		i64, err := strconv.ParseUint(bareValue, 10, 32)
+		if err == nil {
+			value = uint(i64)
+		}
 	case "Timeticks":
 		snmpType = gosnmp.TimeTicks
 		re := regexp.MustCompile(`^\(\d+\)`)
