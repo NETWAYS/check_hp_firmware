@@ -65,6 +65,8 @@ func main() {
 
 	if *debug {
 		log.SetLevel(log.DebugLevel)
+	} else {
+		defer nagios.CatchPanic()
 	}
 
 	var client *gosnmp.GoSNMP
