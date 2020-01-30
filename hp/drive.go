@@ -11,12 +11,12 @@ type PhysicalDrive struct {
 	FwRev  string
 	Serial string
 	Status string
-	Hours  uint64
+	Hours  uint
 }
 
 func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, error) {
 	_, ok := t.Snmp.Values[id]
-	if ! ok {
+	if !ok {
 		return nil, fmt.Errorf("could not find drive %s in table", id)
 	}
 

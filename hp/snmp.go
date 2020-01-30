@@ -72,7 +72,7 @@ const (
 	SnmpCpqDaPhyDrvMultipathAccess     = `.1.3.6.1.4.1.232.3.2.5.1.1.68`
 )
 
-var CpqDaPhyDrvStatusMap = map[int64]string{
+var CpqDaPhyDrvStatusMap = map[int]string{
 	1: "other",
 	2: "ok",
 	3: "failed",
