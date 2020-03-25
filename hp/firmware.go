@@ -12,6 +12,12 @@ import (
 
 const FixedA = "HPD8"
 
+// Source B: https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us
+// Version: 1
+// Last Updated: 2020-03-20
+
+const FixedB = "HPD7"
+
 type AffectedModel struct {
 	ModelNo       string
 	Description   string
@@ -20,6 +26,7 @@ type AffectedModel struct {
 
 //AffectedModelList list of model numbers for drives that are affected with their description as value
 var AffectedModelList = []*AffectedModel{
+	// Drives from bulletin A
 	{"VO0480JFDGT", "HP 480 GB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
 	{"VO0960JFDGU", "HP 960GB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
 	{"VO1920JFDGV", "HP 1,92 TB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
@@ -41,6 +48,12 @@ var AffectedModelList = []*AffectedModel{
 	//{"VK003840JWSST", "HPE 3,84 TB SAS RI LFF SCC DS SPL SSD", FixedA},
 	{"VK007680JWSSU", "HPE 7,68 TB SAS RI SFF SC DS SSD", FixedA},
 	{"VO015300JWSSV", "HPE 15,3 TB SAS RI SFF SC DS SSD", FixedA},
+
+	// Drives from bulletin B
+	{"EK0800JVYPN", "HPE 800GB 12G SAS WI-1 SFF SC SSD", FixedB},
+	{"EO1600JVYPP", "HPE 1.6TB 12G SAS WI-1 SFF SC SSD", FixedB},
+	{"MK0800JVYPQ", "HPE 800GB 12G SAS MU-1 SFF SC SSD", FixedB},
+	{"MO1600JVYPR", "HPE 1.6TB 12G SAS MU-1 SFF SC SSD", FixedB},
 }
 
 type AffectedIndex map[string]*AffectedModel

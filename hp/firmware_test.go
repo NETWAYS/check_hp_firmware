@@ -5,11 +5,12 @@ import (
 	"testing"
 )
 
-const testModel = "VO0480JFDGT"
+const testModelA = "VO0480JFDGT"
+const testModelB = "EK0800JVYPN"
 
 func TestIsAffected(t *testing.T) {
 	assert.False(t, IsAffected("UNKNOWN"))
-	assert.True(t, IsAffected(testModel))
+	assert.True(t, IsAffected(testModelA))
 }
 
 func TestSplitFirmware(t *testing.T) {
@@ -28,7 +29,7 @@ func TestSplitFirmware(t *testing.T) {
 }
 
 func TestIsFirmwareFixed(t *testing.T) {
-	tests := map[string]bool{
+	testsA := map[string]bool{
 		"HPD5":  false,
 		"HPD7":  false,
 		"HPD8":  true,
@@ -36,10 +37,23 @@ func TestIsFirmwareFixed(t *testing.T) {
 		"HPD10": true,
 	}
 
-	model := AffectedModels[testModel]
+	modelA := AffectedModels[testModelA]
+	for fw, expect := range testsA {
+		ok, err := IsFirmwareFixed(modelA, fw)
+		assert.Equal(t, expect, ok)
+		assert.NoError(t, err)
+	}
 
-	for fw, expect := range tests {
-		ok, err := IsFirmwareFixed(model, fw)
+	testsB := map[string]bool{
+		"HPD5": false,
+		"HPD6": false,
+		"HPD7": true,
+		"HPD8": true,
+	}
+
+	modelB := AffectedModels[testModelB]
+	for fw, expect := range testsB {
+		ok, err := IsFirmwareFixed(modelB, fw)
 		assert.Equal(t, expect, ok)
 		assert.NoError(t, err)
 	}
