@@ -2,51 +2,87 @@ package hp
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 )
 
-// Source https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
+// Source A: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
 // Version: 2
 // Effective date: 2019-12-12
 
-const FirmwarePrefix = "HPD"
-const FirmwareFixed = 8
+const FixedA = "HPD8"
 
-//AffectedModels list of model numbers for drives that are affected with their description as value
-var AffectedModels = map[string]string{
-	"VO0480JFDGT":   "HP 480 GB 12 Gbit SAS 2.5\" RI PLP SC SSD",
-	"VO0960JFDGU":   "HP 960GB 12 Gbit SAS 2.5\" RI PLP SC SSD",
-	"VO1920JFDGV":   "HP 1,92 TB 12 Gbit SAS 2.5\" RI PLP SC SSD",
-	"VO3840JFDHA":   "HP 3,84 TB 12 Gbit SAS 2.5\" RI PLP SC SSD",
-	"MO0400JFFCF":   "HP 400 GB 12 Gbit SAS 2.5\" MU PLP SC SSD S2",
-	"MO0800JFFCH":   "HP 800 GB 12 Gbit SAS 2.5\" MU PLP SC SSD S2",
-	"MO1600JFFCK":   "HP 1,6 TB 12 Gbit SAS 2.5\" MU PLP SC SSD S2",
-	"MO3200JFFCL":   "HP 3,2 TB 12 Gbit SAS 2.5\" MU PLP SC SSD S2",
-	"VO000480JWDAR": "HPE 480 GB SAS SFF RI SC DS SSD",
-	"VO000960JWDAT": "HPE 960 GB SAS SFF RI SC DS SSD",
-	"VO001920JWDAU": "HPE 1,92 TB SAS RI SFF SC DS SSD",
-	"VO003840JWDAV": "HPE 3,84 TB SAS RI SFF SC DS SSD",
-	"VO007680JWCNK": "HPE 7,68 TB SAS 12G RI SFF SC DS SSD",
-	"VO015300JWCNL": "HPE 15,3 TB SAS 12G RI SFF SC DS SSD",
-	"VK000960JWSSQ": "HPE 960 GB SAS RI SFF SC DS SSD",
-	"VK001920JWSSR": "HPE 1,92 TB SAS RI SFF SC DS SSD",
-	"VK003840JWSST": "HPE 3,84 TB SAS RI SFF SC DS SSD",
-	// duplicate
-	//"VK003840JWSST": "HPE 3,84 TB SAS RI LFF SCC DS SPL SSD",
-	"VK007680JWSSU": "HPE 7,68 TB SAS RI SFF SC DS SSD",
-	"VO015300JWSSV": "HPE 15,3 TB SAS RI SFF SC DS SSD",
+type AffectedModel struct {
+	ModelNo       string
+	Description   string
+	FixedFirmware string
 }
 
-func IsFirmwareFixed(firmware string) (bool, error) {
-	if len(firmware) < 4 || firmware[:3] != FirmwarePrefix {
-		return false, fmt.Errorf("can not check firmware %s - only built for %s pattern",
-			firmware, FirmwarePrefix)
-	}
+//AffectedModelList list of model numbers for drives that are affected with their description as value
+var AffectedModelList = []*AffectedModel{
+	{"VO0480JFDGT", "HP 480 GB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
+	{"VO0960JFDGU", "HP 960GB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
+	{"VO1920JFDGV", "HP 1,92 TB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
+	{"VO3840JFDHA", "HP 3,84 TB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
+	{"MO0400JFFCF", "HP 400 GB 12 Gbit SAS 2.5\" MU PLP SC SSD S2", FixedA},
+	{"MO0800JFFCH", "HP 800 GB 12 Gbit SAS 2.5\" MU PLP SC SSD S2", FixedA},
+	{"MO1600JFFCK", "HP 1,6 TB 12 Gbit SAS 2.5\" MU PLP SC SSD S2", FixedA},
+	{"MO3200JFFCL", "HP 3,2 TB 12 Gbit SAS 2.5\" MU PLP SC SSD S2", FixedA},
+	{"VO000480JWDAR", "HPE 480 GB SAS SFF RI SC DS SSD", FixedA},
+	{"VO000960JWDAT", "HPE 960 GB SAS SFF RI SC DS SSD", FixedA},
+	{"VO001920JWDAU", "HPE 1,92 TB SAS RI SFF SC DS SSD", FixedA},
+	{"VO003840JWDAV", "HPE 3,84 TB SAS RI SFF SC DS SSD", FixedA},
+	{"VO007680JWCNK", "HPE 7,68 TB SAS 12G RI SFF SC DS SSD", FixedA},
+	{"VO015300JWCNL", "HPE 15,3 TB SAS 12G RI SFF SC DS SSD", FixedA},
+	{"VK000960JWSSQ", "HPE 960 GB SAS RI SFF SC DS SSD", FixedA},
+	{"VK001920JWSSR", "HPE 1,92 TB SAS RI SFF SC DS SSD", FixedA},
+	{"VK003840JWSST", "HPE 3,84 TB SAS RI SFF SC DS SSD", FixedA},
+	// duplicate
+	//{"VK003840JWSST", "HPE 3,84 TB SAS RI LFF SCC DS SPL SSD", FixedA},
+	{"VK007680JWSSU", "HPE 7,68 TB SAS RI SFF SC DS SSD", FixedA},
+	{"VO015300JWSSV", "HPE 15,3 TB SAS RI SFF SC DS SSD", FixedA},
+}
 
-	version, err := strconv.ParseUint(firmware[3:], 10, 64)
+type AffectedIndex map[string]*AffectedModel
+
+var AffectedModels = AffectedIndex{}
+
+func init() {
+	for _, drive := range AffectedModelList {
+		AffectedModels[drive.ModelNo] = drive
+	}
+}
+
+func IsAffected(model string) bool {
+	_, found := AffectedModels[model]
+	return found
+}
+
+func SplitFirmware(firmware string) (prefix string, version int, err error) {
+	re := regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
+	match := re.FindStringSubmatch(firmware)
+	if match == nil {
+		return "", 0, fmt.Errorf("could not parse firmware version: %s", firmware)
+	}
+	version, _ = strconv.Atoi(match[2])
+	return match[1], version, nil
+}
+
+func IsFirmwareFixed(model *AffectedModel, firmware string) (bool, error) {
+	currentPrefix, currentVersion, err := SplitFirmware(firmware)
 	if err != nil {
-		return false, fmt.Errorf("can not parse version number from: %s", firmware)
+		return false, err
 	}
 
-	return version >= FirmwareFixed, nil
+	fixedPrefix, fixedVersion, err := SplitFirmware(model.FixedFirmware)
+	if err != nil {
+		return false, err
+	}
+
+	if currentPrefix != fixedPrefix {
+		return false, fmt.Errorf("could not compare versions between: current=%s and fixed=%s",
+			firmware, model.FixedFirmware)
+	}
+
+	return currentVersion >= fixedVersion, nil
 }

@@ -80,8 +80,8 @@ func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 		return nagios.Critical, description + " - status: " + d.Status
 	}
 
-	if _, affected := AffectedModels[d.Model]; affected {
-		ok, err := IsFirmwareFixed(d.FwRev)
+	if model, affected := AffectedModels[d.Model]; affected {
+		ok, err := IsFirmwareFixed(model, d.FwRev)
 		if err != nil {
 			return nagios.Unknown, description + " - error: " + err.Error()
 		} else if ok {
