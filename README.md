@@ -1,14 +1,16 @@
 check_hp_disk_firmware
-=================
+======================
 
 ![Go build](https://github.com/NETWAYS/check_hp_disk_firmware/workflows/Go/badge.svg?branch=master)
 
-Icinga / Nagios check plugin to verify SSD disks are not affected by the `a00092491` bulletin from HPE.
+Icinga / Nagios check plugin to verify SSD disks are not affected by the `a00092491` or `a00097382` bulletin from HPE.
 
 > HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
-> Prevent Drive Failure at 32,768 Hours of Operation
+> Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
 
-Please see [support document from HPE](https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us).
+Please see support documents from HPE:
+* [a00092491](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us)
+* [a00097382](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us)
 
 ## Usage
 

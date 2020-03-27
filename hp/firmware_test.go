@@ -5,8 +5,31 @@ import (
 	"testing"
 )
 
+const testModelA = "VO0480JFDGT"
+const testModelB = "EK0800JVYPN"
+
+func TestIsAffected(t *testing.T) {
+	assert.False(t, IsAffected("UNKNOWN"))
+	assert.True(t, IsAffected(testModelA))
+}
+
+func TestSplitFirmware(t *testing.T) {
+	prefix, version, err := SplitFirmware("HPD5")
+	assert.Equal(t, "HPD", prefix)
+	assert.Equal(t, 5, version)
+	assert.Nil(t, err)
+
+	prefix, version, err = SplitFirmware("HPD10")
+	assert.Equal(t, "HPD", prefix)
+	assert.Equal(t, 10, version)
+	assert.Nil(t, err)
+
+	prefix, version, err = SplitFirmware("1HPD5")
+	assert.Error(t, err)
+}
+
 func TestIsFirmwareFixed(t *testing.T) {
-	tests := map[string]bool{
+	testsA := map[string]bool{
 		"HPD5":  false,
 		"HPD7":  false,
 		"HPD8":  true,
@@ -14,9 +37,28 @@ func TestIsFirmwareFixed(t *testing.T) {
 		"HPD10": true,
 	}
 
-	for fw, expect := range tests {
-		ok, err := IsFirmwareFixed(fw)
+	modelA := AffectedModels[testModelA]
+	for fw, expect := range testsA {
+		ok, err := IsFirmwareFixed(modelA, fw)
 		assert.Equal(t, expect, ok)
 		assert.NoError(t, err)
 	}
+
+	testsB := map[string]bool{
+		"HPD5": false,
+		"HPD6": false,
+		"HPD7": true,
+		"HPD8": true,
+	}
+
+	modelB := AffectedModels[testModelB]
+	for fw, expect := range testsB {
+		ok, err := IsFirmwareFixed(modelB, fw)
+		assert.Equal(t, expect, ok)
+		assert.NoError(t, err)
+	}
+
+	otherModel := &AffectedModel{"ABC", "nothing", "HPX11"}
+	_, err := IsFirmwareFixed(otherModel, "HPD5")
+	assert.Error(t, err)
 }
