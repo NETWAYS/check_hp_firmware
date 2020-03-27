@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.1.0](https://github.com/NETWAYS/check_hp_disk_firmware/tree/v1.1.0) (2020-03-27)
+
+[Full Changelog](https://github.com/NETWAYS/check_hp_disk_firmware/compare/v1.0.1...v1.1.0)
+
+**Implemented enhancements:**
+
+- Add support for the a00097382 bulletin [\#4](https://github.com/NETWAYS/check_hp_disk_firmware/pull/4) ([lazyfrosch](https://github.com/lazyfrosch))
+
+**Merged pull requests:**
+
+- Bump github.com/sirupsen/logrus from 1.4.2 to 1.5.0 [\#8](https://github.com/NETWAYS/check_hp_disk_firmware/pull/8) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/spf13/pflag from 1.0.3 to 1.0.5 [\#7](https://github.com/NETWAYS/check_hp_disk_firmware/pull/7) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/soniah/gosnmp from 1.22.0 to 1.24.0 [\#6](https://github.com/NETWAYS/check_hp_disk_firmware/pull/6) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/stretchr/testify from 1.3.0 to 1.5.1 [\#5](https://github.com/NETWAYS/check_hp_disk_firmware/pull/5) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+
 ## [v1.0.1](https://github.com/NETWAYS/check_hp_disk_firmware/tree/v1.0.1) (2020-01-30)
 
 [Full Changelog](https://github.com/NETWAYS/check_hp_disk_firmware/compare/v1.0.0...v1.0.1)
