@@ -98,6 +98,16 @@ You can help with problems by supplying the output of snmpwalk for the system yo
 Please make sure to either censor the output of any private information, or send an e-mail to support@netways.de,
 so we can provide you with a secure upload link, that won't be shared with public 
 
+## Technical Details
+
+All known and affected drives are documented in [hp/firmware.go](hp/firmware.go) as `AffectedModelList` and can easily
+be enhanced in the future. Make sure to document source documents and versions as well.
+
+Requirement for comparing the version is, that the version prefix matches, e.g. `HPD`.
+
+The check reads the `cpqDaPhyDrvTable` Table from SNMP, which should be available over the IPMI agent or the locally
+installed HP tools, hooked into the SNMP daemon of the operating system.
+
 ## License
 
 Copyright (C) 2020 Markus Frosch <markus.frosch@netways.de>
