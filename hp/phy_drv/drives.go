@@ -1,7 +1,8 @@
-package hp
+package phy_drv
 
 import (
 	"fmt"
+	"github.com/NETWAYS/check_hp_disk_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
 	"github.com/mcuadros/go-version"
 	"github.com/soniah/gosnmp"
@@ -18,7 +19,7 @@ func GetCpqDaPhyDrvTable(client *gosnmp.GoSNMP) (*CpqDaPhyDrvTable, error) {
 	table := CpqDaPhyDrvTable{}
 	table.Snmp = &snmp.Table{
 		Client: client,
-		Oid:    SnmpCpqDaPhyDrvTable,
+		Oid:    mib.CpqDaPhyDrvTable,
 	}
 
 	return &table, table.Snmp.Walk()
@@ -26,7 +27,7 @@ func GetCpqDaPhyDrvTable(client *gosnmp.GoSNMP) (*CpqDaPhyDrvTable, error) {
 
 func LoadCpqDaPhyDrvTable(stream io.Reader) (*CpqDaPhyDrvTable, error) {
 	table := CpqDaPhyDrvTable{}
-	snmpTable, err := snmp.LoadTableFromWalkOutput(SnmpCpqDaPhyDrvTable, stream)
+	snmpTable, err := snmp.LoadTableFromWalkOutput(mib.CpqDaPhyDrvTable, stream)
 	if err != nil {
 		return nil, err
 	}

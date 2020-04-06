@@ -110,7 +110,7 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		snmpType = gosnmp.IPAddress
 		value = bareValue
 	default:
-		return fmt.Errorf("can not parse net-snmp type %s of oid %s", netSnmpType, oid)
+		return fmt.Errorf("can not parse net-mib type %s of oid %s", netSnmpType, oid)
 	}
 
 	if err != nil {

@@ -1,7 +1,8 @@
-package hp
+package phy_drv
 
 import (
 	"fmt"
+	"github.com/NETWAYS/check_hp_disk_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
 )
 
@@ -24,32 +25,32 @@ func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, 
 	drive := &PhysicalDrive{}
 	drive.Id = id
 
-	drive.Model, err = t.GetStringValue(id, SnmpCpqDaPhyDrvModel)
+	drive.Model, err = t.GetStringValue(id, mib.CpqDaPhyDrvModel)
 	if err != nil {
 		return nil, fmt.Errorf("could not get model for drive %s: %s", id, err)
 	}
 
-	drive.FwRev, err = t.GetStringValue(id, SnmpCpqDaPhyDrvFWRev)
+	drive.FwRev, err = t.GetStringValue(id, mib.CpqDaPhyDrvFWRev)
 	if err != nil {
 		return nil, fmt.Errorf("could not get fwrev for drive %s: %s", id, err)
 	}
 
-	drive.Serial, err = t.GetStringValue(id, SnmpCpqDaPhyDrvSerialNum)
+	drive.Serial, err = t.GetStringValue(id, mib.CpqDaPhyDrvSerialNum)
 	if err != nil {
 		return nil, fmt.Errorf("could not get serial for drive %s: %s", id, err)
 	}
 
-	statusI, err := t.GetIntValue(id, SnmpCpqDaPhyDrvStatus)
+	statusI, err := t.GetIntValue(id, mib.CpqDaPhyDrvStatus)
 	if err != nil {
 		return nil, fmt.Errorf("could not get status for drive %s: %s", id, err)
 	}
-	if status, ok := CpqDaPhyDrvStatusMap[statusI]; ok {
+	if status, ok := mib.CpqDaPhyDrvStatusMap[statusI]; ok {
 		drive.Status = status
 	} else {
 		return nil, fmt.Errorf("invalid status for drive: %s: %s", id, status)
 	}
 
-	drive.Hours, err = t.GetUintValue(id, SnmpCpqDaPhyDrvRefHours)
+	drive.Hours, err = t.GetUintValue(id, mib.CpqDaPhyDrvRefHours)
 	if err != nil {
 		return nil, fmt.Errorf("could not get hours for drive %s: %s", id, err)
 	}

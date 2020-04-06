@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/NETWAYS/check_hp_disk_firmware/hp"
+	"github.com/NETWAYS/check_hp_disk_firmware/hp/phy_drv"
 	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
 	log "github.com/sirupsen/logrus"
@@ -70,7 +70,7 @@ func main() {
 	}
 
 	var client *gosnmp.GoSNMP
-	var table *hp.CpqDaPhyDrvTable
+	var table *phy_drv.CpqDaPhyDrvTable
 
 	if *file != "" {
 		var fh *os.File
@@ -80,7 +80,7 @@ func main() {
 		}
 		defer fh.Close()
 
-		table, err = hp.LoadCpqDaPhyDrvTable(fh)
+		table, err = phy_drv.LoadCpqDaPhyDrvTable(fh)
 	} else {
 		defaultClient := *gosnmp.Default
 		client = &defaultClient
@@ -105,7 +105,7 @@ func main() {
 		}
 		defer client.Conn.Close()
 
-		table, err = hp.GetCpqDaPhyDrvTable(client)
+		table, err = phy_drv.GetCpqDaPhyDrvTable(client)
 	}
 	if err != nil {
 		nagios.ExitError(err)
@@ -116,7 +116,7 @@ func main() {
 		nagios.Exit(3, "No HP drive data found!")
 	}
 
-	drives, err := hp.GetPhysicalDrivesFromTable(table)
+	drives, err := phy_drv.GetPhysicalDrivesFromTable(table)
 	if err != nil {
 		nagios.ExitError(err)
 	}

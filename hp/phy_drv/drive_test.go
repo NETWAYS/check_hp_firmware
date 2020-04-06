@@ -1,4 +1,4 @@
-package hp
+package phy_drv
 
 import (
 	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
