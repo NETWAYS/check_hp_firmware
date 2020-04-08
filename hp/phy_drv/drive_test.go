@@ -38,11 +38,11 @@ func TestPhysicalDrive_GetNagiosStatus(t *testing.T) {
 	drive.Model = affectedDrive
 	status, info = drive.GetNagiosStatus()
 	assert.Equal(t, nagios.Critical, status)
-	assert.Regexp(t, `^\(1\.1 \) model=\w+ serial=ABC123 firmware=HPD1 hours=1337 - affected`, info)
+	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=HPD1 hours=1337 - affected`, info)
 
 	// affected but fixed
 	drive.FwRev = affectedDriveFixed
 	status, info = drive.GetNagiosStatus()
 	assert.Equal(t, nagios.OK, status)
-	assert.Regexp(t, `^\(1\.1 \) model=\w+ serial=ABC123 firmware=\w+ hours=1337 - .*applied`, info)
+	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=\w+ hours=1337 - .*applied`, info)
 }
