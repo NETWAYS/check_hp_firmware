@@ -22,10 +22,24 @@ func TestSnmpTable_Walk(t *testing.T) {
 
 	table := &Table{
 		Client: client,
-		Oid:     ".1.3.6.1.2.1.2.2", // IF-MIB::ifTable
+		Oid:    ".1.3.6.1.2.1.2.2", // IF-MIB::ifTable
 	}
 
 	assert.NoError(t, table.Walk())
 
 	// TODO
+}
+
+func TestSortOIDS(t *testing.T) {
+	assert.Equal(t,
+		[]string{"1.2.3", "4.5.6"},
+		SortOIDs([]string{"4.5.6", "1.2.3"}))
+
+	assert.Equal(t,
+		[]string{"1.2.3", "1.2.10", "1.2.14"},
+		SortOIDs([]string{"1.2.14", "1.2.10", "1.2.3"}))
+
+	assert.Equal(t,
+		[]string{"1.2.3.4.5.6", "1.2.10", "1.2.14"},
+		SortOIDs([]string{"1.2.14", "1.2.10", "1.2.3.4.5.6"}))
 }

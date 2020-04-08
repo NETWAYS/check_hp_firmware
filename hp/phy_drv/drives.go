@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"github.com/NETWAYS/check_hp_disk_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
-	"github.com/mcuadros/go-version"
 	"github.com/soniah/gosnmp"
 	"io"
-	"sort"
 	"strings"
 )
 
@@ -37,16 +35,7 @@ func LoadCpqDaPhyDrvTable(stream io.Reader) (*CpqDaPhyDrvTable, error) {
 }
 
 func (t *CpqDaPhyDrvTable) ListIds() []string {
-	ids := make([]string, 0, len(t.Snmp.Values))
-	for k := range t.Snmp.Values {
-		ids = append(ids, k)
-	}
-
-	sort.Slice(ids, func(i, j int) bool {
-		return version.Compare(ids[i], ids[j], "<")
-	})
-
-	return ids
+	return t.Snmp.GetSortedOIDs()
 }
 
 func (t *CpqDaPhyDrvTable) GetValue(id string, oid string) (interface{}, error) {

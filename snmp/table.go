@@ -2,8 +2,10 @@ package snmp
 
 import (
 	"fmt"
+	"github.com/mcuadros/go-version"
 	log "github.com/sirupsen/logrus"
 	"github.com/soniah/gosnmp"
+	"sort"
 	"strings"
 )
 
@@ -79,7 +81,7 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 		"id":     id,
 	}).Debug("Reading PDU data")
 
-	if _, ok := t.Values[id]; ! ok {
+	if _, ok := t.Values[id]; !ok {
 		t.Values[id] = TableColumns{}
 	}
 
@@ -87,9 +89,26 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 	t.Values[id][column] = data
 
 	// keep list of existing columns
-	if _, ok := t.Columns[column]; ! ok {
+	if _, ok := t.Columns[column]; !ok {
 		t.Columns[column] = column
 	}
 
 	return nil
+}
+
+func (t *Table) GetSortedOIDs() []string {
+	var ids []string
+	for k := range t.Values {
+		ids = append(ids, k)
+	}
+
+	return SortOIDs(ids)
+}
+
+func SortOIDs(list []string) []string {
+	sort.Slice(list, func(i, j int) bool {
+		return version.Compare(list[i], list[j], "<")
+	})
+
+	return list
 }
