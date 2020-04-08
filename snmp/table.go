@@ -96,6 +96,49 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 	return nil
 }
 
+func (t *Table) GetValue(id string, oid string) (interface{}, error) {
+	parts := strings.Split(oid, ".")
+	column := parts[len(parts)-1]
+
+	drive, ok := t.Values[id]
+	if !ok {
+		return nil, fmt.Errorf("could not find row %s while looking for column %s", id, column)
+	}
+
+	value, ok := drive[column]
+	if !ok {
+		return nil, fmt.Errorf("could not find column %s for row %s", column, id)
+	}
+
+	return value.Value, nil
+}
+
+func (t *Table) GetStringValue(id string, oid string) (string, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s", value), nil
+}
+
+func (t *Table) GetUintValue(id string, oid string) (uint, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return 0, err
+	}
+
+	return value.(uint), nil
+}
+
+func (t *Table) GetIntValue(id string, oid string) (int, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return 0, err
+	}
+
+	return value.(int), nil
+}
+
 func (t *Table) GetSortedOIDs() []string {
 	var ids []string
 	for k := range t.Values {

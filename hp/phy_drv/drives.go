@@ -1,12 +1,10 @@
 package phy_drv
 
 import (
-	"fmt"
 	"github.com/NETWAYS/check_hp_disk_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
 	"github.com/soniah/gosnmp"
 	"io"
-	"strings"
 )
 
 type CpqDaPhyDrvTable struct {
@@ -39,44 +37,17 @@ func (t *CpqDaPhyDrvTable) ListIds() []string {
 }
 
 func (t *CpqDaPhyDrvTable) GetValue(id string, oid string) (interface{}, error) {
-	parts := strings.Split(oid, ".")
-	column := parts[len(parts)-1]
-
-	drive, ok := t.Snmp.Values[id]
-	if !ok {
-		return nil, fmt.Errorf("could not find drive %s while looking for column %s", id, column)
-	}
-
-	value, ok := drive[column]
-	if !ok {
-		return nil, fmt.Errorf("could not find column %s for drive %s", column, id)
-	}
-
-	return value.Value, nil
+	return t.Snmp.GetValue(id, oid)
 }
 
 func (t *CpqDaPhyDrvTable) GetStringValue(id string, oid string) (string, error) {
-	value, err := t.GetValue(id, oid)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%s", value), nil
+	return t.Snmp.GetStringValue(id, oid)
 }
 
 func (t *CpqDaPhyDrvTable) GetUintValue(id string, oid string) (uint, error) {
-	value, err := t.GetValue(id, oid)
-	if err != nil {
-		return 0, err
-	}
-
-	return value.(uint), nil
+	return t.Snmp.GetUintValue(id, oid)
 }
 
 func (t *CpqDaPhyDrvTable) GetIntValue(id string, oid string) (int, error) {
-	value, err := t.GetValue(id, oid)
-	if err != nil {
-		return 0, err
-	}
-
-	return value.(int), nil
+	return t.Snmp.GetIntValue(id, oid)
 }
