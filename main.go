@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/NETWAYS/check_hp_disk_firmware/hp/cntlr"
 	"github.com/NETWAYS/check_hp_disk_firmware/hp/phy_drv"
 	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
 	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
 	log "github.com/sirupsen/logrus"
 	"github.com/soniah/gosnmp"
 	flag "github.com/spf13/pflag"
+	"io"
 	"os"
 	"time"
 )
@@ -21,7 +23,7 @@ Prevent Drive Failure at 32,768 Hours of Operation
 Please see support document from HPE: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
 `
 
-// Check for HP PhysicalDrive CVEs via SNMP
+// Check for HP Controller CVEs via SNMP
 func main() {
 	flagSet := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	flagSet.SortFlags = false
@@ -70,7 +72,8 @@ func main() {
 	}
 
 	var client *gosnmp.GoSNMP
-	var table *phy_drv.CpqDaPhyDrvTable
+	var cntlrTable *cntlr.CpqDaCntlrTable
+	var driveTable *phy_drv.CpqDaPhyDrvTable
 
 	if *file != "" {
 		var fh *os.File
@@ -80,7 +83,21 @@ func main() {
 		}
 		defer fh.Close()
 
-		table, err = phy_drv.LoadCpqDaPhyDrvTable(fh)
+		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(fh)
+		if err != nil {
+			nagios.ExitError(err)
+		}
+
+		// jump back to start
+		_, err = fh.Seek(0, io.SeekStart)
+		if err != nil {
+			nagios.ExitError(err)
+		}
+
+		driveTable, err = phy_drv.LoadCpqDaPhyDrvTable(fh)
+		if err != nil {
+			nagios.ExitError(err)
+		}
 	} else {
 		defaultClient := *gosnmp.Default
 		client = &defaultClient
@@ -105,40 +122,60 @@ func main() {
 		}
 		defer client.Conn.Close()
 
-		table, err = phy_drv.GetCpqDaPhyDrvTable(client)
+		cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
+		if err != nil {
+			nagios.ExitError(err)
+		}
+
+		driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
+		if err != nil {
+			nagios.ExitError(err)
+		}
 	}
+
+	if len(cntlrTable.Snmp.Values) == 0 {
+		nagios.Exit(3, "No HP controller data found!")
+	}
+
+	controllers, err := cntlr.GetControllersFromTable(cntlrTable)
 	if err != nil {
 		nagios.ExitError(err)
 	}
 
-	ids := table.ListIds()
-	if len(ids) == 0 {
+	if len(driveTable.Snmp.Values) == 0 {
 		nagios.Exit(3, "No HP drive data found!")
 	}
 
-	drives, err := phy_drv.GetPhysicalDrivesFromTable(table)
+	drives, err := phy_drv.GetPhysicalDrivesFromTable(driveTable)
 	if err != nil {
 		nagios.ExitError(err)
 	}
 
-	// TODO: check if drives found?
-
 	overall := nagios.Overall{}
 
+	countControllers := 0
+	for _, controller := range controllers {
+		controllerStatus, desc := controller.GetNagiosStatus()
+		overall.Add(controllerStatus, desc)
+		countControllers += 1
+	}
+
+	countDrives := 0
 	for _, drive := range drives {
 		driveStatus, desc := drive.GetNagiosStatus()
 		overall.Add(driveStatus, desc)
+		countDrives += 1
 	}
 
 	status := overall.GetStatus()
 	var summary string
 	switch status {
 	case nagios.OK:
-		summary = "All drives seem fine"
+		summary = fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives)
 	case nagios.Warning:
-		summary = "Found warnings for drives"
+		summary = fmt.Sprintf("Found %d warnings", overall.Warnings)
 	case nagios.Critical:
-		summary = "Found critical problems on drives"
+		summary = fmt.Sprintf("Found %d critical problems", overall.Criticals)
 	}
 	overall.Summary = summary
 	nagios.Exit(status, overall.GetOutput())

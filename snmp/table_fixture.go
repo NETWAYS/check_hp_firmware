@@ -42,6 +42,13 @@ func (t *Table) addSnmpWalkLine(line string) error {
 
 	oid := parts[0]
 
+	// check if we are interested in the oid
+	subOid := GetSubOid(oid, t.Oid)
+	if subOid == "" {
+		// other data in walk, ignoring it
+		return nil
+	}
+
 	var netSnmpType string
 	var bareValue string
 
