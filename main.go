@@ -15,12 +15,29 @@ import (
 )
 
 const Readme = `
-Icinga / Nagios check plugin to verify SSD disks are not affected by the a00092491 bulletin from HPE.
+Icinga / Nagios check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
 
-HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
-Prevent Drive Failure at 32,768 Hours of Operation
+For controllers:
 
-Please see support document from HPE: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
+  HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
+  required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
+  Version 1.98 through 2.62, based on the following scenarios. HPE strongly recommends performing this upgrade at the
+  customer's earliest opportunity per the "Action Required" in the table located in the Resolution section.
+  Neglecting to perform the recommended resolution could result in potential subsequent errors and potential data
+  inconsistency.
+
+For SSD disks:
+
+  HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
+  Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
+
+Please see support documents from HPE:
+* https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us
+* https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us
+* https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097210en_us
+
+**IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
+affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 `
 
 // Check for HP Controller CVEs via SNMP

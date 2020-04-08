@@ -3,14 +3,29 @@ check_hp_disk_firmware
 
 ![Go build](https://github.com/NETWAYS/check_hp_disk_firmware/workflows/Go/badge.svg?branch=master)
 
-Icinga / Nagios check plugin to verify SSD disks are not affected by the `a00092491` or `a00097382` bulletin from HPE.
+<!-- Note: Update `Readme` in main.go when changing this! -->
 
+Icinga / Nagios check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
+
+For controllers:
+> HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
+> required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
+> Version 1.98 through 2.62, based on the following scenarios. HPE strongly recommends performing this upgrade at the
+> customer's earliest opportunity per the "Action Required" in the table located in the Resolution section.
+> Neglecting to perform the recommended resolution could result in potential subsequent errors and potential data
+> inconsistency.
+
+For SSD disks:
 > HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
 > Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
 
 Please see support documents from HPE:
 * [a00092491](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us)
 * [a00097382](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us)
+* [a00097210](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097210en_us)
+
+**IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
+affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 
 ## Usage
 
@@ -48,7 +63,9 @@ You can download or build the project locally with go:
 
 ## Example
 
-    OK - All drives seem fine
+    OK - All 2 controllers and 33 drives seem fine
+    [OK] controller (0) model=p816i-a serial=XXX firmware=1.65 - firmware older than affected
+    [OK] controller (4) model=p408e-p serial=XXX firmware=1.65 - firmware older than affected
     [OK] (0.9 ) model=MO003200JWFWR serial=XXX firmware=HPD2 hours=8086
     [OK] (0.11) model=EK000400GWEPE serial=XXX firmware=HPG0 hours=8086
     [OK] (0.12) model=EK000400GWEPE serial=XXX firmware=HPG0 hours=8086
@@ -96,17 +113,19 @@ You can help with problems by supplying the output of snmpwalk for the system yo
     $ snmpwalk -c public -v2c -On HOST 1.3.6.1.4.1.232
     
 Please make sure to either censor the output of any private information, or send an e-mail to support@netways.de,
-so we can provide you with a secure upload link, that won't be shared with public 
+so we can provide you with a secure upload link, that won't be shared with public.
 
 ## Technical Details
 
-All known and affected drives are documented in [hp/firmware.go](hp/firmware.go) as `AffectedModelList` and can easily
-be enhanced in the future. Make sure to document source documents and versions as well.
+Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/phy_drv](hp/phy_drv)
 
-Requirement for comparing the version is, that the version prefix matches, e.g. `HPD`.
+Known models and affected firmware is documented in: [hp/cntlr/firmware_data.go](hp/cntlr/firmware_data.go) [hp/phy_drv/firmware_data.go](hp/phy_drv/firmware_data.go)
 
-The check reads the `cpqDaPhyDrvTable` Table from SNMP, which should be available over the IPMI agent or the locally
-installed HP tools, hooked into the SNMP daemon of the operating system.
+This data can be easily enhanced in the future. Make sure to document source documents and versions as well, and check
+the accompanying firmware and status functions.
+
+The check reads the `cpqDaCntlrTable` and `cpqDaPhyDrvTable` tables from SNMP, which should be available over the
+IPMI agent or the locally installed HP tools, hooked into the SNMP daemon of the operating system.
 
 ## License
 
