@@ -7,7 +7,8 @@ check_hp_firmware
 
 Icinga / Nagios check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
 
-For controllers:
+**HPE Controllers**
+
 > HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
 > required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
 > Version 1.98 through 2.62, based on the following scenarios. HPE strongly recommends performing this upgrade at the
@@ -15,9 +16,21 @@ For controllers:
 > Neglecting to perform the recommended resolution could result in potential subsequent errors and potential data
 > inconsistency.
 
-For SSD disks:
+The check will alert you with a CRITICAL when the firmware is in the affected range with:
+
+* `if you have RAID 1/10/ADM - update immediately!`
+* `if you have RAID 5/6/50/60 - update immediately!`
+
+And it will add a short note when `firmware older than affected` or `firmware has been updated`. At the moment the
+plugin does not verify configured logical drives, but we believe you should update in any case.
+
+**HPE SSD SAS disks**
+
 > HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
 > Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
+
+The check will raise a CRITICAL when the drive needs to be updated with the note `affected by FW bug`, and when
+the drive is patched with `firmware update applied`.
 
 Please see support documents from HPE:
 * [a00092491](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us)
