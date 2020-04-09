@@ -6,7 +6,7 @@ GH_PROJECT := check_hp_firmware
 
 .PHONY: all clean build test
 
-all: clean build
+all: build test
 
 distclean: clean
 clean:
