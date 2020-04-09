@@ -1,7 +1,7 @@
 package cntlr
 
 import (
-	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
+	"github.com/NETWAYS/check_hp_firmware/nagios"
 	"github.com/mcuadros/go-version"
 )
 

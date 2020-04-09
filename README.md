@@ -1,7 +1,7 @@
-check_hp_disk_firmware
-======================
+check_hp_firmware
+=================
 
-![Go build](https://github.com/NETWAYS/check_hp_disk_firmware/workflows/Go/badge.svg?branch=master)
+![Go build](https://github.com/NETWAYS/check_hp_firmware/workflows/Go/badge.svg?branch=master)
 
 <!-- Note: Update `Readme` in main.go when changing this! -->
 
@@ -43,13 +43,13 @@ Arguments:
 
 Simply run the command:
 
-    $ ./check_hp_disk_firmware -H localhost -c public
+    $ ./check_hp_firmware -H localhost -c public
 
 ## Installation
 
 This is a golang project, either download the binary from the releases:
 
-https://github.com/NETWAYS/check_hp_disk_firmware/releases
+https://github.com/NETWAYS/check_hp_firmware/releases
 
 Also see the included [CheckCommand for Icinga 2](icinga2.conf).
 
@@ -57,9 +57,9 @@ You can download or build the project locally with go:
 
     $ go get github.com/NETWAYS/check_hp_cve
     
-    $ git clone https://github.com/NETWAYS/check_hp_disk_firmware
-    $ cd check_hp_disk_firmware/
-    $ go build -o check_hp_disk_firmware .
+    $ git clone https://github.com/NETWAYS/check_hp_firmware
+    $ cd check_hp_firmware/
+    $ go build -o check_hp_firmware .
 
 ## Example
 

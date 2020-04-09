@@ -1,4 +1,4 @@
-module github.com/NETWAYS/check_hp_disk_firmware
+module github.com/NETWAYS/check_hp_firmware
 
 go 1.13
 

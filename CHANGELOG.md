@@ -1,33 +1,33 @@
 # Changelog
 
-## [v1.1.0](https://github.com/NETWAYS/check_hp_disk_firmware/tree/v1.1.0) (2020-03-27)
+## [v1.1.0](https://github.com/NETWAYS/check_hp_firmware/tree/v1.1.0) (2020-03-27)
 
-[Full Changelog](https://github.com/NETWAYS/check_hp_disk_firmware/compare/v1.0.1...v1.1.0)
+[Full Changelog](https://github.com/NETWAYS/check_hp_firmware/compare/v1.0.1...v1.1.0)
 
 **Implemented enhancements:**
 
-- Add support for the a00097382 bulletin [\#4](https://github.com/NETWAYS/check_hp_disk_firmware/pull/4) ([lazyfrosch](https://github.com/lazyfrosch))
+- Add support for the a00097382 bulletin [\#4](https://github.com/NETWAYS/check_hp_firmware/pull/4) ([lazyfrosch](https://github.com/lazyfrosch))
 
 **Merged pull requests:**
 
-- Bump github.com/sirupsen/logrus from 1.4.2 to 1.5.0 [\#8](https://github.com/NETWAYS/check_hp_disk_firmware/pull/8) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump github.com/spf13/pflag from 1.0.3 to 1.0.5 [\#7](https://github.com/NETWAYS/check_hp_disk_firmware/pull/7) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump github.com/soniah/gosnmp from 1.22.0 to 1.24.0 [\#6](https://github.com/NETWAYS/check_hp_disk_firmware/pull/6) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump github.com/stretchr/testify from 1.3.0 to 1.5.1 [\#5](https://github.com/NETWAYS/check_hp_disk_firmware/pull/5) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/sirupsen/logrus from 1.4.2 to 1.5.0 [\#8](https://github.com/NETWAYS/check_hp_firmware/pull/8) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/spf13/pflag from 1.0.3 to 1.0.5 [\#7](https://github.com/NETWAYS/check_hp_firmware/pull/7) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/soniah/gosnmp from 1.22.0 to 1.24.0 [\#6](https://github.com/NETWAYS/check_hp_firmware/pull/6) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump github.com/stretchr/testify from 1.3.0 to 1.5.1 [\#5](https://github.com/NETWAYS/check_hp_firmware/pull/5) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
-## [v1.0.1](https://github.com/NETWAYS/check_hp_disk_firmware/tree/v1.0.1) (2020-01-30)
+## [v1.0.1](https://github.com/NETWAYS/check_hp_firmware/tree/v1.0.1) (2020-01-30)
 
-[Full Changelog](https://github.com/NETWAYS/check_hp_disk_firmware/compare/v1.0.0...v1.0.1)
+[Full Changelog](https://github.com/NETWAYS/check_hp_firmware/compare/v1.0.0...v1.0.1)
 
 **Fixed bugs:**
 
-- Ensure panics are correctly handled with exit 3 [\#2](https://github.com/NETWAYS/check_hp_disk_firmware/issues/2)
-- Catch panics with nagios helpers to exit 3 [\#3](https://github.com/NETWAYS/check_hp_disk_firmware/pull/3) ([lazyfrosch](https://github.com/lazyfrosch))
-- Fix snmp values to be int/uint 32-bit values [\#1](https://github.com/NETWAYS/check_hp_disk_firmware/pull/1) ([lazyfrosch](https://github.com/lazyfrosch))
+- Ensure panics are correctly handled with exit 3 [\#2](https://github.com/NETWAYS/check_hp_firmware/issues/2)
+- Catch panics with nagios helpers to exit 3 [\#3](https://github.com/NETWAYS/check_hp_firmware/pull/3) ([lazyfrosch](https://github.com/lazyfrosch))
+- Fix snmp values to be int/uint 32-bit values [\#1](https://github.com/NETWAYS/check_hp_firmware/pull/1) ([lazyfrosch](https://github.com/lazyfrosch))
 
-## [v1.0.0](https://github.com/NETWAYS/check_hp_disk_firmware/tree/v1.0.0) (2020-01-26)
+## [v1.0.0](https://github.com/NETWAYS/check_hp_firmware/tree/v1.0.0) (2020-01-26)
 
-[Full Changelog](https://github.com/NETWAYS/check_hp_disk_firmware/compare/7c8517e36fc61fb7641fa90a6ab2b009765a1034...v1.0.0)
+[Full Changelog](https://github.com/NETWAYS/check_hp_firmware/compare/7c8517e36fc61fb7641fa90a6ab2b009765a1034...v1.0.0)
 
 
 

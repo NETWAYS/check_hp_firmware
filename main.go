@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/NETWAYS/check_hp_disk_firmware/hp/cntlr"
-	"github.com/NETWAYS/check_hp_disk_firmware/hp/phy_drv"
-	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
-	"github.com/NETWAYS/check_hp_disk_firmware/snmp"
+	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
+	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
+	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/check_hp_firmware/snmp"
 	log "github.com/sirupsen/logrus"
 	"github.com/soniah/gosnmp"
 	flag "github.com/spf13/pflag"
