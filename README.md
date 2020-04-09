@@ -27,6 +27,8 @@ Please see support documents from HPE:
 **IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
 affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 
+> **Note:** This plugin was initially named check_hp_disk_firmware
+
 ## Usage
 
 Arguments:
