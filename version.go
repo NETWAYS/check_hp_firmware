@@ -1,7 +1,7 @@
 package main
 
 const Project = "check_hp_firmware"
-const Version = "1.1.0"
+const Version = "1.2.0"
 
 var GitCommit string
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.2.0](https://github.com/NETWAYS/check_hp_firmware/tree/v1.2.0) (2020-04-09)
+
+[Full Changelog](https://github.com/NETWAYS/check_hp_firmware/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- Rename plugin to check\_hp\_firmware [\#10](https://github.com/NETWAYS/check_hp_firmware/issues/10)
+- Rename plugin to check\_hp\_firmware [\#11](https://github.com/NETWAYS/check_hp_firmware/pull/11) ([lazyfrosch](https://github.com/lazyfrosch))
+- Add support for controllers and bulletin a00097210 [\#9](https://github.com/NETWAYS/check_hp_firmware/pull/9) ([lazyfrosch](https://github.com/lazyfrosch))
+
 ## [v1.1.0](https://github.com/NETWAYS/check_hp_firmware/tree/v1.1.0) (2020-03-27)
 
 [Full Changelog](https://github.com/NETWAYS/check_hp_firmware/compare/v1.0.1...v1.1.0)
