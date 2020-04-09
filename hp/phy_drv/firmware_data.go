@@ -1,10 +1,4 @@
-package hp
-
-import (
-	"fmt"
-	"regexp"
-	"strconv"
-)
+package phy_drv
 
 // Source A: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
 // Version: 2
@@ -17,12 +11,6 @@ const FixedA = "HPD8"
 // Last Updated: 2020-03-20
 
 const FixedB = "HPD7"
-
-type AffectedModel struct {
-	ModelNo       string
-	Description   string
-	FixedFirmware string
-}
 
 //AffectedModelList list of model numbers for drives that are affected with their description as value
 var AffectedModelList = []*AffectedModel{
@@ -54,48 +42,4 @@ var AffectedModelList = []*AffectedModel{
 	{"EO1600JVYPP", "HPE 1.6TB 12G SAS WI-1 SFF SC SSD", FixedB},
 	{"MK0800JVYPQ", "HPE 800GB 12G SAS MU-1 SFF SC SSD", FixedB},
 	{"MO1600JVYPR", "HPE 1.6TB 12G SAS MU-1 SFF SC SSD", FixedB},
-}
-
-type AffectedIndex map[string]*AffectedModel
-
-var AffectedModels = AffectedIndex{}
-
-func init() {
-	for _, drive := range AffectedModelList {
-		AffectedModels[drive.ModelNo] = drive
-	}
-}
-
-func IsAffected(model string) bool {
-	_, found := AffectedModels[model]
-	return found
-}
-
-func SplitFirmware(firmware string) (prefix string, version int, err error) {
-	re := regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
-	match := re.FindStringSubmatch(firmware)
-	if match == nil {
-		return "", 0, fmt.Errorf("could not parse firmware version: %s", firmware)
-	}
-	version, _ = strconv.Atoi(match[2])
-	return match[1], version, nil
-}
-
-func IsFirmwareFixed(model *AffectedModel, firmware string) (bool, error) {
-	currentPrefix, currentVersion, err := SplitFirmware(firmware)
-	if err != nil {
-		return false, err
-	}
-
-	fixedPrefix, fixedVersion, err := SplitFirmware(model.FixedFirmware)
-	if err != nil {
-		return false, err
-	}
-
-	if currentPrefix != fixedPrefix {
-		return false, fmt.Errorf("could not compare versions between: current=%s and fixed=%s",
-			firmware, model.FixedFirmware)
-	}
-
-	return currentVersion >= fixedVersion, nil
 }

@@ -2,8 +2,10 @@ package snmp
 
 import (
 	"fmt"
+	"github.com/mcuadros/go-version"
 	log "github.com/sirupsen/logrus"
 	"github.com/soniah/gosnmp"
+	"sort"
 	"strings"
 )
 
@@ -79,7 +81,7 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 		"id":     id,
 	}).Debug("Reading PDU data")
 
-	if _, ok := t.Values[id]; ! ok {
+	if _, ok := t.Values[id]; !ok {
 		t.Values[id] = TableColumns{}
 	}
 
@@ -87,9 +89,69 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 	t.Values[id][column] = data
 
 	// keep list of existing columns
-	if _, ok := t.Columns[column]; ! ok {
+	if _, ok := t.Columns[column]; !ok {
 		t.Columns[column] = column
 	}
 
 	return nil
+}
+
+func (t *Table) GetValue(id string, oid string) (interface{}, error) {
+	parts := strings.Split(oid, ".")
+	column := parts[len(parts)-1]
+
+	drive, ok := t.Values[id]
+	if !ok {
+		return nil, fmt.Errorf("could not find row %s while looking for column %s", id, column)
+	}
+
+	value, ok := drive[column]
+	if !ok {
+		return nil, fmt.Errorf("could not find column %s for row %s", column, id)
+	}
+
+	return value.Value, nil
+}
+
+func (t *Table) GetStringValue(id string, oid string) (string, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s", value), nil
+}
+
+func (t *Table) GetUintValue(id string, oid string) (uint, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return 0, err
+	}
+
+	return value.(uint), nil
+}
+
+func (t *Table) GetIntValue(id string, oid string) (int, error) {
+	value, err := t.GetValue(id, oid)
+	if err != nil {
+		return 0, err
+	}
+
+	return value.(int), nil
+}
+
+func (t *Table) GetSortedOIDs() []string {
+	var ids []string
+	for k := range t.Values {
+		ids = append(ids, k)
+	}
+
+	return SortOIDs(ids)
+}
+
+func SortOIDs(list []string) []string {
+	sort.Slice(list, func(i, j int) bool {
+		return version.Compare(list[i], list[j], "<")
+	})
+
+	return list
 }

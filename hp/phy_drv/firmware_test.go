@@ -1,4 +1,4 @@
-package hp
+package phy_drv
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,11 +7,6 @@ import (
 
 const testModelA = "VO0480JFDGT"
 const testModelB = "EK0800JVYPN"
-
-func TestIsAffected(t *testing.T) {
-	assert.False(t, IsAffected("UNKNOWN"))
-	assert.True(t, IsAffected(testModelA))
-}
 
 func TestSplitFirmware(t *testing.T) {
 	prefix, version, err := SplitFirmware("HPD5")

@@ -42,6 +42,13 @@ func (t *Table) addSnmpWalkLine(line string) error {
 
 	oid := parts[0]
 
+	// check if we are interested in the oid
+	subOid := GetSubOid(oid, t.Oid)
+	if subOid == "" {
+		// other data in walk, ignoring it
+		return nil
+	}
+
 	var netSnmpType string
 	var bareValue string
 
@@ -110,7 +117,7 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		snmpType = gosnmp.IPAddress
 		value = bareValue
 	default:
-		return fmt.Errorf("can not parse net-snmp type %s of oid %s", netSnmpType, oid)
+		return fmt.Errorf("can not parse net-mib type %s of oid %s", netSnmpType, oid)
 	}
 
 	if err != nil {
