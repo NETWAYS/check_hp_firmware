@@ -26,5 +26,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: check_hp_disk_firmware
+          name: check_hp_firmware
           path: build

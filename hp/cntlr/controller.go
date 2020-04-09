@@ -2,8 +2,8 @@ package cntlr
 
 import (
 	"fmt"
-	"github.com/NETWAYS/check_hp_disk_firmware/hp/mib"
-	"github.com/NETWAYS/check_hp_disk_firmware/nagios"
+	"github.com/NETWAYS/check_hp_firmware/hp/mib"
+	"github.com/NETWAYS/check_hp_firmware/nagios"
 	"strings"
 )
 
