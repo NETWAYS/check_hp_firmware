@@ -3,7 +3,7 @@ package cntlr
 import (
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 	"strings"
 )
 
@@ -80,7 +80,7 @@ func (d *Controller) GetNagiosStatus() (int, string) {
 		d.Id, d.Model, strings.TrimSpace(d.Serial), d.FwRev)
 
 	if d.Status != "ok" {
-		return nagios.Critical, description + " - status: " + d.Status
+		return check.Critical, description + " - status: " + d.Status
 	}
 
 	if _, affected := AffectedModels[d.Model]; affected {
@@ -88,5 +88,5 @@ func (d *Controller) GetNagiosStatus() (int, string) {
 		return status, description + " - " + info
 	}
 
-	return nagios.OK, description
+	return check.OK, description
 }

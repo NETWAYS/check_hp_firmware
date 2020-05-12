@@ -3,7 +3,7 @@ package phy_drv
 import (
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 )
 
 type PhysicalDrive struct {
@@ -80,19 +80,19 @@ func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 		d.Id, d.Model, d.Serial, d.FwRev, d.Hours)
 
 	if d.Status != "ok" {
-		return nagios.Critical, description + " - status: " + d.Status
+		return check.Critical, description + " - status: " + d.Status
 	}
 
 	if model, affected := AffectedModels[d.Model]; affected {
 		ok, err := IsFirmwareFixed(model, d.FwRev)
 		if err != nil {
-			return nagios.Unknown, description + " - error: " + err.Error()
+			return check.Unknown, description + " - error: " + err.Error()
 		} else if ok {
-			return nagios.OK, description + " - firmware update applied"
+			return check.OK, description + " - firmware update applied"
 		} else {
-			return nagios.Critical, description + " - affected by FW bug"
+			return check.Critical, description + " - affected by FW bug"
 		}
 	}
 
-	return nagios.OK, description
+	return check.OK, description
 }
