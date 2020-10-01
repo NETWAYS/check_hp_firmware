@@ -16,8 +16,7 @@ type Controller struct {
 }
 
 func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) {
-	_, ok := t.Snmp.Values[id]
-	if !ok {
+	if _, ok := t.Snmp.Values[id]; !ok {
 		return nil, fmt.Errorf("could not find controller %s in table", id)
 	}
 
