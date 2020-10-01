@@ -32,8 +32,7 @@ func (t *Table) Walk() error {
 		"oid": t.Oid,
 	}).Debug("Starting walk for table")
 
-	err := t.Client.Walk(t.Oid, t.addWalkValue)
-	if err != nil {
+	if err := t.Client.Walk(t.Oid, t.addWalkValue); err != nil {
 		return err
 	}
 
