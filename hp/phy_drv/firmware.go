@@ -14,7 +14,10 @@ type AffectedModel struct {
 
 type AffectedIndex map[string]*AffectedModel
 
-var AffectedModels = AffectedIndex{}
+var (
+	AffectedModels = AffectedIndex{}
+	versionRE = regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
+)
 
 func init() {
 	for _, drive := range AffectedModelList {
@@ -23,12 +26,14 @@ func init() {
 }
 
 func SplitFirmware(firmware string) (prefix string, version int, err error) {
-	re := regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
-	match := re.FindStringSubmatch(firmware)
+	match := versionRE.FindStringSubmatch(firmware)
 	if match == nil {
 		return "", 0, fmt.Errorf("could not parse firmware version: %s", firmware)
 	}
-	version, _ = strconv.Atoi(match[2])
+	version, err = strconv.Atoi(match[2])
+	if err != nil {
+		return "", 0, fmt.Errorf("unable to parse version: %s", err)
+	}
 	return match[1], version, nil
 }
 
