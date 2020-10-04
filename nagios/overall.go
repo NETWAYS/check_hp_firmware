@@ -62,7 +62,8 @@ func (o *Overall) GetSummary() string {
 	if o.Summary == "" {
 		return "No status information"
 	}
-	return "states: " + strings.TrimSpace(o.Summary)
+	o.Summary = "states: " + strings.TrimSpace(o.Summary)
+	return o.Summary
 }
 
 func (o *Overall) GetOutput() string {
