@@ -80,5 +80,4 @@ func TestOverall_GetOutput(t *testing.T) {
 	overall.Add(2, "Second Critical")
 	overall.Summary = "Custom Summary"
 	assert.Equal(t, "Custom Summary\n[OK] First OK\n[CRITICAL] Second Critical\n", overall.GetOutput())
-
 }

@@ -21,29 +21,31 @@ func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, 
 	}
 
 	var err error
+
 	drive := &PhysicalDrive{
 		Id: id,
 	}
 
 	drive.Model, err = t.GetStringValue(id, mib.CpqDaPhyDrvModel)
 	if err != nil {
-		return nil, fmt.Errorf("could not get model for drive %s: %s", id, err)
+		return nil, fmt.Errorf("could not get model for drive %s: %w", id, err)
 	}
 
 	drive.FwRev, err = t.GetStringValue(id, mib.CpqDaPhyDrvFWRev)
 	if err != nil {
-		return nil, fmt.Errorf("could not get fwrev for drive %s: %s", id, err)
+		return nil, fmt.Errorf("could not get fwrev for drive %s: %w", id, err)
 	}
 
 	drive.Serial, err = t.GetStringValue(id, mib.CpqDaPhyDrvSerialNum)
 	if err != nil {
-		return nil, fmt.Errorf("could not get serial for drive %s: %s", id, err)
+		return nil, fmt.Errorf("could not get serial for drive %s: %w", id, err)
 	}
 
 	statusI, err := t.GetIntValue(id, mib.CpqDaPhyDrvStatus)
 	if err != nil {
-		return nil, fmt.Errorf("could not get status for drive %s: %s", id, err)
+		return nil, fmt.Errorf("could not get status for drive %s: %w", id, err)
 	}
+
 	if status, ok := mib.CpqDaPhyDrvStatusMap[statusI]; ok {
 		drive.Status = status
 	} else {
@@ -52,21 +54,21 @@ func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, 
 
 	drive.Hours, err = t.GetUintValue(id, mib.CpqDaPhyDrvRefHours)
 	if err != nil {
-		return nil, fmt.Errorf("could not get hours for drive %s: %s", id, err)
+		return nil, fmt.Errorf("could not get hours for drive %s: %w", id, err)
 	}
 
 	return drive, nil
 }
 
 func GetPhysicalDrivesFromTable(t *CpqDaPhyDrvTable) ([]*PhysicalDrive, error) {
-	ids := t.ListIds()
 	var drives []*PhysicalDrive
 
-	for _, id := range ids {
+	for _, id := range t.ListIds() {
 		drive, err := NewPhysicalDriveFromTable(t, id)
 		if err != nil {
 			return nil, err
 		}
+
 		drives = append(drives, drive)
 	}
 

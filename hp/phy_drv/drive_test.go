@@ -19,8 +19,10 @@ func TestPhysicalDrive_GetNagiosStatus(t *testing.T) {
 		Hours:  1337,
 	}
 
-	var status int
-	var info string
+	var (
+		status int
+		info   string
+	)
 
 	// good
 	status, info = drive.GetNagiosStatus()

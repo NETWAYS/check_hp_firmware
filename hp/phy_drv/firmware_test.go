@@ -19,7 +19,7 @@ func TestSplitFirmware(t *testing.T) {
 	assert.Equal(t, 10, version)
 	assert.Nil(t, err)
 
-	prefix, version, err = SplitFirmware("1HPD5")
+	_, _, err = SplitFirmware("1HPD5")
 	assert.Error(t, err)
 }
 
@@ -33,6 +33,7 @@ func TestIsFirmwareFixed(t *testing.T) {
 	}
 
 	modelA := AffectedModels[testModelA]
+
 	for fw, expect := range testsA {
 		ok, err := IsFirmwareFixed(modelA, fw)
 		assert.Equal(t, expect, ok)
@@ -47,6 +48,7 @@ func TestIsFirmwareFixed(t *testing.T) {
 	}
 
 	modelB := AffectedModels[testModelB]
+
 	for fw, expect := range testsB {
 		ok, err := IsFirmwareFixed(modelB, fw)
 		assert.Equal(t, expect, ok)

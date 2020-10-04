@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
 	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
@@ -81,12 +82,12 @@ func main() {
 		flagSet.PrintDefaults()
 	}
 
-	var err error
-	err = flagSet.Parse(os.Args[1:])
+	err := flagSet.Parse(os.Args[1:])
 	if err != nil {
-		if err != flag.ErrHelp {
+		if errors.Is(err, flag.ErrHelp) {
 			nagios.ExitError(err)
 		}
+
 		os.Exit(3)
 	}
 
@@ -101,16 +102,20 @@ func main() {
 		defer nagios.CatchPanic()
 	}
 
-	var client *gosnmp.GoSNMP
-	var cntlrTable *cntlr.CpqDaCntlrTable
-	var driveTable *phy_drv.CpqDaPhyDrvTable
+	var (
+		client     *gosnmp.GoSNMP
+		cntlrTable *cntlr.CpqDaCntlrTable
+		driveTable *phy_drv.CpqDaPhyDrvTable
+	)
 
 	if *file != "" {
 		var fh *os.File
+
 		fh, err = os.Open(*file)
 		if err != nil {
 			nagios.ExitError(err)
 		}
+
 		defer fh.Close()
 
 		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(fh)
@@ -129,7 +134,7 @@ func main() {
 			nagios.ExitError(err)
 		}
 	} else {
-		defaultClient := *gosnmp.Default
+		defaultClient := *gosnmp.Default //nolint:govet
 		client = &defaultClient
 		client.Target = *host
 		client.Community = *community
@@ -184,21 +189,29 @@ func main() {
 	overall := nagios.Overall{}
 
 	countControllers := 0
+
 	for _, controller := range controllers {
 		controllerStatus, desc := controller.GetNagiosStatus()
+
 		overall.Add(controllerStatus, desc)
+
 		countControllers += 1
 	}
 
 	countDrives := 0
+
 	for _, drive := range drives {
 		driveStatus, desc := drive.GetNagiosStatus()
+
 		overall.Add(driveStatus, desc)
+
 		countDrives += 1
 	}
 
-	status := overall.GetStatus()
 	var summary string
+
+	status := overall.GetStatus()
+
 	switch status {
 	case nagios.OK:
 		summary = fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives)
@@ -207,6 +220,7 @@ func main() {
 	case nagios.Critical:
 		summary = fmt.Sprintf("Found %d critical problems", overall.Criticals)
 	}
+
 	overall.Summary = summary
 	nagios.Exit(status, overall.GetOutput())
 }

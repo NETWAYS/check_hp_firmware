@@ -10,5 +10,6 @@ func buildVersion() string {
 	if GitCommit != "" {
 		version += " - " + GitCommit
 	}
+
 	return version
 }

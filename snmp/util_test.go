@@ -36,6 +36,7 @@ func getEnvDefault(key string, defaultValue string) string {
 	if value == "" {
 		value = defaultValue
 	}
+
 	return value
 }
 

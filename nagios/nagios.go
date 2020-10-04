@@ -38,6 +38,7 @@ func CatchPanic() {
 			return
 		}
 	}
+
 	if r := recover(); r != nil {
 		Exit(Unknown, "Golang encountered a panic: %s\n\n%s", r, debug.Stack())
 	}
