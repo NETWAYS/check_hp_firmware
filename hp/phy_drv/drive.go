@@ -16,14 +16,14 @@ type PhysicalDrive struct {
 }
 
 func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, error) {
-	_, ok := t.Snmp.Values[id]
-	if !ok {
+	if _, ok := t.Snmp.Values[id];!ok {
 		return nil, fmt.Errorf("could not find drive %s in table", id)
 	}
 
 	var err error
-	drive := &PhysicalDrive{}
-	drive.Id = id
+	drive := &PhysicalDrive{
+		Id: id,
+	}
 
 	drive.Model, err = t.GetStringValue(id, mib.CpqDaPhyDrvModel)
 	if err != nil {

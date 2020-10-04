@@ -44,26 +44,25 @@ func (o *Overall) GetStatus() int {
 }
 
 func (o *Overall) GetSummary() string {
-	if o.Summary == "" {
-		if o.Criticals > 0 {
-			o.Summary += fmt.Sprintf("critical=%d ", o.Criticals)
-		}
-		if o.Unknowns > 0 {
-			o.Summary += fmt.Sprintf("unknown=%d ", o.Unknowns)
-		}
-		if o.Warnings > 0 {
-			o.Summary += fmt.Sprintf("warning=%d ", o.Warnings)
-		}
-		if o.OKs > 0 {
-			o.Summary += fmt.Sprintf("ok=%d ", o.OKs)
-		}
-		if o.Summary == "" {
-			o.Summary = "No status information"
-		} else {
-			o.Summary = "states: " + strings.TrimSpace(o.Summary)
-		}
+	if o.Summary != "" {
+		return o.Summary
 	}
-
+	if o.Criticals > 0 {
+		o.Summary += fmt.Sprintf("critical=%d ", o.Criticals)
+	}
+	if o.Unknowns > 0 {
+		o.Summary += fmt.Sprintf("unknown=%d ", o.Unknowns)
+	}
+	if o.Warnings > 0 {
+		o.Summary += fmt.Sprintf("warning=%d ", o.Warnings)
+	}
+	if o.OKs > 0 {
+		o.Summary += fmt.Sprintf("ok=%d ", o.OKs)
+	}
+	if o.Summary == "" {
+		return "No status information"
+	}
+	o.Summary = "states: " + strings.TrimSpace(o.Summary)
 	return o.Summary
 }
 
