@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/hex"
 	"fmt"
-	"github.com/soniah/gosnmp"
+	"github.com/gosnmp/gosnmp"
 	"io"
 	"regexp"
 	"strconv"

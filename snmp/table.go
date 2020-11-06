@@ -2,9 +2,9 @@ package snmp
 
 import (
 	"fmt"
+	"github.com/gosnmp/gosnmp"
 	"github.com/mcuadros/go-version"
 	log "github.com/sirupsen/logrus"
-	"github.com/soniah/gosnmp"
 	"sort"
 	"strings"
 )
