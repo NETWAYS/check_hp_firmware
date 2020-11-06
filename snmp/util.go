@@ -2,7 +2,7 @@ package snmp
 
 import (
 	"fmt"
-	"github.com/soniah/gosnmp"
+	"github.com/gosnmp/gosnmp"
 )
 
 func IsOid(oid string) bool {
@@ -32,7 +32,7 @@ func IsOid(oid string) bool {
 
 // IsOidPartOf tests if an OID is equal of below another OID
 func IsOidPartOf(oid string, baseOid string) bool {
-	if ! IsOid(oid) || ! IsOid(baseOid) {
+	if !IsOid(oid) || !IsOid(baseOid) {
 		return false
 	}
 
@@ -47,7 +47,7 @@ func IsOidPartOf(oid string, baseOid string) bool {
 }
 
 func GetSubOid(oid string, baseOid string) string {
-	if ! IsOid(oid) || ! IsOid(baseOid) || ! IsOidPartOf(oid, baseOid) {
+	if !IsOid(oid) || !IsOid(baseOid) || !IsOidPartOf(oid, baseOid) {
 		return ""
 	}
 

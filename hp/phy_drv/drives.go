@@ -3,7 +3,7 @@ package phy_drv
 import (
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
-	"github.com/soniah/gosnmp"
+	"github.com/gosnmp/gosnmp"
 	"io"
 )
 
