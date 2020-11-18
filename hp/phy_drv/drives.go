@@ -11,7 +11,7 @@ type CpqDaPhyDrvTable struct {
 	Snmp *snmp.Table
 }
 
-func GetCpqDaPhyDrvTable(client *gosnmp.GoSNMP) (*CpqDaPhyDrvTable, error) {
+func GetCpqDaPhyDrvTable(client gosnmp.Handler) (*CpqDaPhyDrvTable, error) {
 	table := CpqDaPhyDrvTable{}
 	table.Snmp = &snmp.Table{
 		Client: client,

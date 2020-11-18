@@ -10,7 +10,7 @@ import (
 )
 
 type Table struct {
-	Client  *gosnmp.GoSNMP
+	Client  gosnmp.Handler
 	Oid     string
 	Columns IndexedIds
 	Values  TableRows

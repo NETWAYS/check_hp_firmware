@@ -103,7 +103,6 @@ func main() {
 	}
 
 	var (
-		client     *gosnmp.GoSNMP
 		cntlrTable *cntlr.CpqDaCntlrTable
 		driveTable *phy_drv.CpqDaPhyDrvTable
 	)
@@ -134,16 +133,18 @@ func main() {
 			nagios.ExitError(err)
 		}
 	} else {
-		defaultClient := *gosnmp.Default //nolint:govet
-		client = &defaultClient
-		client.Target = *host
-		client.Community = *community
-		client.Timeout = time.Duration(*timeout) * time.Second
-		client.Retries = 1
+		client := gosnmp.NewHandler()
+		client.SetTarget(*host)
+		client.SetCommunity(*community)
+		client.SetTimeout(time.Duration(*timeout) * time.Second)
+		client.SetRetries(1)
 
-		if err := snmp.SetVersion(client, *protocol); err != nil {
+		version, err := snmp.VersionFromString(*protocol)
+		if err != nil {
 			nagios.ExitError(err)
 		}
+
+		client.SetVersion(version)
 
 		if *ipv4 {
 			err = client.ConnectIPv4()
@@ -155,7 +156,10 @@ func main() {
 		if err != nil {
 			nagios.ExitError(err)
 		}
-		defer client.Conn.Close()
+
+		defer func() {
+			_ = client.Close()
+		}()
 
 		cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
 		if err != nil {

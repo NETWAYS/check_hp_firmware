@@ -15,7 +15,7 @@ func init() {
 
 func TestSnmpTable_Walk(t *testing.T) {
 	if os.Getenv("NETWORK_TESTS_ENABLED") == "" {
-		return
+		t.Skip("NETWORK_TESTS_ENABLED not set")
 	}
 
 	client := getSnmpClientFromEnv(t)
@@ -25,8 +25,10 @@ func TestSnmpTable_Walk(t *testing.T) {
 		Oid:    ".1.3.6.1.2.1.2.2", // IF-MIB::ifTable
 	}
 
-	// TODO
 	assert.NoError(t, table.Walk())
+
+	assert.NotEmpty(t, table.Columns, "expect at least the default columns")
+	assert.NotEmpty(t, table.Values, "expect at least some rows, even a basic container should have localhost")
 }
 
 func TestSortOIDS(t *testing.T) {

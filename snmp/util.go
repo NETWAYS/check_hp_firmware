@@ -57,19 +57,19 @@ func GetSubOid(oid string, baseOid string) string {
 	return oid[l+1:]
 }
 
-func SetVersion(client *gosnmp.GoSNMP, version string) error {
+func VersionFromString(version string) (v gosnmp.SnmpVersion, err error) {
 	switch version {
 	case "1":
-		client.Version = gosnmp.Version1
+		v = gosnmp.Version2c
 	case "2", "2c":
-		client.Version = gosnmp.Version2c
+		v = gosnmp.Version2c
 	case "3":
-		client.Version = gosnmp.Version3
+		v = gosnmp.Version3
 		// TODO: support v3?
-		return fmt.Errorf("SNMPv3 config not implemented")
+		err = fmt.Errorf("SNMPv3 config not implemented")
 	default:
-		return fmt.Errorf("unknown SNMP version: %s", version)
+		err = fmt.Errorf("unknown SNMP version: %s", version)
 	}
 
-	return nil
+	return
 }
