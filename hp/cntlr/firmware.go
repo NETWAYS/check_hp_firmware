@@ -24,9 +24,8 @@ func init() {
 	}
 }
 
+// Note: we can't validate against existing logical drives at the moment
 func IsAffected(firmware string) (int, string) {
-	// Note: we can't validate against existing logical drives at the moment
-
 	if version.Compare(firmware, VersionFixed, ">=") {
 		return nagios.OK, "firmware has been updated"
 	}
@@ -42,5 +41,4 @@ func IsAffected(firmware string) (int, string) {
 	}
 
 	return nagios.OK, "firmware older than affected"
-
 }

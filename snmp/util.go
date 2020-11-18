@@ -20,6 +20,7 @@ func IsOid(oid string) bool {
 		} else if !(char >= '0' && char <= '9') {
 			return false
 		}
+
 		lastChar = char
 	}
 
@@ -52,6 +53,7 @@ func GetSubOid(oid string, baseOid string) string {
 	}
 
 	l := len(baseOid)
+
 	return oid[l+1:]
 }
 

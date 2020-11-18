@@ -49,8 +49,10 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		return nil
 	}
 
-	var netSnmpType string
-	var bareValue string
+	var (
+		netSnmpType string
+		bareValue string
+	)
 
 	if parts[1] == "\"\"" {
 		// snmpwalk just lists "", which basically means null
@@ -68,9 +70,11 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		bareValue = split[1]
 	}
 
-	var snmpType gosnmp.Asn1BER
-	var value interface{}
-	var err error
+	var (
+		snmpType gosnmp.Asn1BER
+		value interface{}
+		err error
+	)
 
 	// TODO: compare list with net-snmp source code!
 	switch netSnmpType {
@@ -79,6 +83,7 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		value = bareValue
 	case "INTEGER":
 		snmpType = gosnmp.Integer
+
 		i64, err := strconv.ParseInt(bareValue, 10, 32)
 		if err == nil {
 			value = int(i64)
@@ -87,12 +92,14 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		snmpType = gosnmp.OctetString
 		value = strings.Trim(bareValue, "\"")
 	case "Hex-STRING":
-		hexString := strings.Join(strings.Split(bareValue, " "), "")
 		var bytes []byte
+
+		hexString := strings.Join(strings.Split(bareValue, " "), "")
 		bytes, err = hex.DecodeString(hexString)
 		value = string(bytes)
 	case "Counter32":
 		snmpType = gosnmp.Counter32
+
 		i64, err := strconv.ParseUint(bareValue, 10, 32)
 		if err == nil {
 			value = uint(i64)
@@ -102,6 +109,7 @@ func (t *Table) addSnmpWalkLine(line string) error {
 		value, err = strconv.ParseUint(bareValue, 10, 64)
 	case "Gauge32":
 		snmpType = gosnmp.Gauge32
+
 		i64, err := strconv.ParseUint(bareValue, 10, 32)
 		if err == nil {
 			value = uint(i64)
@@ -121,7 +129,7 @@ func (t *Table) addSnmpWalkLine(line string) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("could not parse %s from oid %s: %s", netSnmpType, oid, err)
+		return fmt.Errorf("could not parse %s from oid %s: %w", netSnmpType, oid, err)
 	}
 
 	data := gosnmp.SnmpPDU{

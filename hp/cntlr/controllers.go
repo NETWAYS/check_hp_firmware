@@ -23,10 +23,12 @@ func GetCpqDaCntlrTable(client *gosnmp.GoSNMP) (*CpqDaCntlrTable, error) {
 
 func LoadCpqDaCntlrTable(stream io.Reader) (*CpqDaCntlrTable, error) {
 	table := CpqDaCntlrTable{}
+
 	snmpTable, err := snmp.LoadTableFromWalkOutput(mib.CpqDaCntlrTable, stream)
 	if err != nil {
 		return nil, err
 	}
+
 	table.Snmp = snmpTable
 
 	return &table, nil

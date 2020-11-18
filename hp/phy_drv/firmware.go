@@ -30,10 +30,12 @@ func SplitFirmware(firmware string) (prefix string, version int, err error) {
 	if match == nil {
 		return "", 0, fmt.Errorf("could not parse firmware version: %s", firmware)
 	}
+
 	version, err = strconv.Atoi(match[2])
 	if err != nil {
-		return "", 0, fmt.Errorf("unable to parse version: %s", err)
+		return "", 0, fmt.Errorf("unable to parse version: %w", err)
 	}
+
 	return match[1], version, nil
 }
 

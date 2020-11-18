@@ -63,6 +63,7 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 		// other data in walk, ignoring it
 		return nil
 	}
+
 	parts := strings.Split(subOid, ".")
 
 	if len(parts) < 3 {
@@ -117,6 +118,7 @@ func (t *Table) GetStringValue(id string, oid string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return fmt.Sprintf("%s", value), nil
 }
 

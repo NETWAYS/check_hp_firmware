@@ -25,9 +25,8 @@ func TestSnmpTable_Walk(t *testing.T) {
 		Oid:    ".1.3.6.1.2.1.2.2", // IF-MIB::ifTable
 	}
 
-	assert.NoError(t, table.Walk())
-
 	// TODO
+	assert.NoError(t, table.Walk())
 }
 
 func TestSortOIDS(t *testing.T) {

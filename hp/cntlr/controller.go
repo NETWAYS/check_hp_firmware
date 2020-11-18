@@ -21,13 +21,15 @@ func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) 
 	}
 
 	var err error
+
 	controller := &Controller{}
 	controller.Id = id
 
 	modelI, err := t.GetIntValue(id, mib.CpqDaCntlrModel)
 	if err != nil {
-		return nil, fmt.Errorf("could not get model for controller %s: %s", id, err)
+		return nil, fmt.Errorf("could not get model for controller %s: %w", id, err)
 	}
+
 	if model, ok := mib.CpqDaCntlrModelMap[modelI]; ok {
 		controller.Model = model
 	} else {
@@ -36,18 +38,19 @@ func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) 
 
 	controller.FwRev, err = t.GetStringValue(id, mib.CpqDaCntlrFWRev)
 	if err != nil {
-		return nil, fmt.Errorf("could not get fwrev for controller %s: %s", id, err)
+		return nil, fmt.Errorf("could not get fwrev for controller %s: %w", id, err)
 	}
 
 	controller.Serial, err = t.GetStringValue(id, mib.CpqDaCntlrSerialNumber)
 	if err != nil {
-		return nil, fmt.Errorf("could not get serial for controller %s: %s", id, err)
+		return nil, fmt.Errorf("could not get serial for controller %s: %w", id, err)
 	}
 
 	statusI, err := t.GetIntValue(id, mib.CpqDaCntlrBoardStatus)
 	if err != nil {
-		return nil, fmt.Errorf("could not get status for controller %s: %s", id, err)
+		return nil, fmt.Errorf("could not get status for controller %s: %w", id, err)
 	}
+
 	if status, ok := mib.CpqDaCntlrBoardStatusMap[statusI]; ok {
 		controller.Status = status
 	} else {
@@ -58,14 +61,14 @@ func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) 
 }
 
 func GetControllersFromTable(t *CpqDaCntlrTable) ([]*Controller, error) {
-	ids := t.ListIds()
 	var controllers []*Controller
 
-	for _, id := range ids {
+	for _, id := range t.ListIds() {
 		controller, err := NewControllerFromTable(t, id)
 		if err != nil {
 			return nil, err
 		}
+
 		controllers = append(controllers, controller)
 	}
 
