@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
@@ -10,7 +11,7 @@ import (
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"io"
+	"io/ioutil"
 	"os"
 	"time"
 )
@@ -108,27 +109,17 @@ func main() {
 	)
 
 	if *file != "" {
-		var fh *os.File
-
-		fh, err = os.Open(*file)
+		data, err := ioutil.ReadFile(*file)
 		if err != nil {
 			nagios.ExitError(err)
 		}
 
-		defer fh.Close()
-
-		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(fh)
+		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(bytes.NewReader(data))
 		if err != nil {
 			nagios.ExitError(err)
 		}
 
-		// jump back to start
-		_, err = fh.Seek(0, io.SeekStart)
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		driveTable, err = phy_drv.LoadCpqDaPhyDrvTable(fh)
+		driveTable, err = phy_drv.LoadCpqDaPhyDrvTable(bytes.NewReader(data))
 		if err != nil {
 			nagios.ExitError(err)
 		}
