@@ -40,21 +40,23 @@ func getEnvDefault(key string, defaultValue string) string {
 	return value
 }
 
-func getSnmpClientFromEnv(t *testing.T) *gosnmp.GoSNMP {
-	d := *gosnmp.Default
-	c := d
-	c.Target = getEnvDefault("SNMP_HOST", "localhost")
-	c.Community = getEnvDefault("SNMP_COMMUNITY", "public")
+func getSnmpClientFromEnv(t *testing.T) gosnmp.Handler {
+	h := gosnmp.NewHandler()
 
-	if err := SetVersion(&c, getEnvDefault("SNMP_VERSION", "2")); err != nil {
+	h.SetTarget(getEnvDefault("SNMP_HOST", "localhost"))
+	h.SetCommunity(getEnvDefault("SNMP_COMMUNITY", "public"))
+
+	version, err := VersionFromString(getEnvDefault("SNMP_VERSION", "2"))
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	c.Retries = 1
+	h.SetVersion(version)
+	h.SetRetries(1)
 
-	if err := c.Connect(); err != nil {
+	if err := h.Connect(); err != nil {
 		t.Fatal(err)
 	}
 
-	return &c
+	return h
 }

@@ -4,14 +4,13 @@ import (
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
 	"github.com/gosnmp/gosnmp"
-	"io"
 )
 
 type CpqDaPhyDrvTable struct {
 	Snmp *snmp.Table
 }
 
-func GetCpqDaPhyDrvTable(client *gosnmp.GoSNMP) (*CpqDaPhyDrvTable, error) {
+func GetCpqDaPhyDrvTable(client gosnmp.Handler) (*CpqDaPhyDrvTable, error) {
 	table := CpqDaPhyDrvTable{}
 	table.Snmp = &snmp.Table{
 		Client: client,
@@ -19,19 +18,6 @@ func GetCpqDaPhyDrvTable(client *gosnmp.GoSNMP) (*CpqDaPhyDrvTable, error) {
 	}
 
 	return &table, table.Snmp.Walk()
-}
-
-func LoadCpqDaPhyDrvTable(stream io.Reader) (*CpqDaPhyDrvTable, error) {
-	table := CpqDaPhyDrvTable{}
-
-	snmpTable, err := snmp.LoadTableFromWalkOutput(mib.CpqDaPhyDrvTable, stream)
-	if err != nil {
-		return nil, err
-	}
-
-	table.Snmp = snmpTable
-
-	return &table, nil
 }
 
 func (t *CpqDaPhyDrvTable) ListIds() []string {

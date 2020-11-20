@@ -10,7 +10,6 @@ import (
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"io"
 	"os"
 	"time"
 )
@@ -103,69 +102,58 @@ func main() {
 	}
 
 	var (
-		client     *gosnmp.GoSNMP
+		client     gosnmp.Handler
 		cntlrTable *cntlr.CpqDaCntlrTable
 		driveTable *phy_drv.CpqDaPhyDrvTable
 	)
 
 	if *file != "" {
-		var fh *os.File
-
-		fh, err = os.Open(*file)
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		defer fh.Close()
-
-		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(fh)
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		// jump back to start
-		_, err = fh.Seek(0, io.SeekStart)
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		driveTable, err = phy_drv.LoadCpqDaPhyDrvTable(fh)
+		client, err = snmp.NewFileHandlerFromFile(*file)
 		if err != nil {
 			nagios.ExitError(err)
 		}
 	} else {
-		defaultClient := *gosnmp.Default //nolint:govet
-		client = &defaultClient
-		client.Target = *host
-		client.Community = *community
-		client.Timeout = time.Duration(*timeout) * time.Second
-		client.Retries = 1
+		client = gosnmp.NewHandler()
+		client.SetTarget(*host)
+		client.SetCommunity(*community)
+		client.SetTimeout(time.Duration(*timeout) * time.Second)
+		client.SetRetries(1)
 
-		if err := snmp.SetVersion(client, *protocol); err != nil {
-			nagios.ExitError(err)
-		}
-
-		if *ipv4 {
-			err = client.ConnectIPv4()
-		} else if *ipv6 {
-			err = client.ConnectIPv6()
-		} else {
-			err = client.Connect()
-		}
-		if err != nil {
-			nagios.ExitError(err)
-		}
-		defer client.Conn.Close()
-
-		cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
+		version, err := snmp.VersionFromString(*protocol)
 		if err != nil {
 			nagios.ExitError(err)
 		}
 
-		driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
-		if err != nil {
-			nagios.ExitError(err)
-		}
+		client.SetVersion(version)
+	}
+
+	// Initialize connection
+	if *ipv4 {
+		err = client.ConnectIPv4()
+	} else if *ipv6 {
+		err = client.ConnectIPv6()
+	} else {
+		err = client.Connect()
+	}
+
+	if err != nil {
+		nagios.ExitError(err)
+	}
+
+	defer func() {
+		_ = client.Close()
+	}()
+
+	// Load controller data
+	cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
+	if err != nil {
+		nagios.ExitError(err)
+	}
+
+	// Load drive data
+	driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
+	if err != nil {
+		nagios.ExitError(err)
 	}
 
 	if len(cntlrTable.Snmp.Values) == 0 {
