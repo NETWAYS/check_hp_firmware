@@ -4,7 +4,6 @@ import (
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
 	"github.com/gosnmp/gosnmp"
-	"io"
 )
 
 type CpqDaCntlrTable struct {
@@ -19,19 +18,6 @@ func GetCpqDaCntlrTable(client gosnmp.Handler) (*CpqDaCntlrTable, error) {
 	}
 
 	return &table, table.Snmp.Walk()
-}
-
-func LoadCpqDaCntlrTable(stream io.Reader) (*CpqDaCntlrTable, error) {
-	table := CpqDaCntlrTable{}
-
-	snmpTable, err := snmp.LoadTableFromWalkOutput(mib.CpqDaCntlrTable, stream)
-	if err != nil {
-		return nil, err
-	}
-
-	table.Snmp = snmpTable
-
-	return &table, nil
 }
 
 func (t *CpqDaCntlrTable) ListIds() []string {

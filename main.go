@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
@@ -11,7 +10,6 @@ import (
 	"github.com/gosnmp/gosnmp"
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"io/ioutil"
 	"os"
 	"time"
 )
@@ -104,27 +102,18 @@ func main() {
 	}
 
 	var (
+		client     gosnmp.Handler
 		cntlrTable *cntlr.CpqDaCntlrTable
 		driveTable *phy_drv.CpqDaPhyDrvTable
 	)
 
 	if *file != "" {
-		data, err := ioutil.ReadFile(*file)
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		cntlrTable, err = cntlr.LoadCpqDaCntlrTable(bytes.NewReader(data))
-		if err != nil {
-			nagios.ExitError(err)
-		}
-
-		driveTable, err = phy_drv.LoadCpqDaPhyDrvTable(bytes.NewReader(data))
+		client, err = snmp.NewFileHandlerFromFile(*file)
 		if err != nil {
 			nagios.ExitError(err)
 		}
 	} else {
-		client := gosnmp.NewHandler()
+		client = gosnmp.NewHandler()
 		client.SetTarget(*host)
 		client.SetCommunity(*community)
 		client.SetTimeout(time.Duration(*timeout) * time.Second)
@@ -136,31 +125,35 @@ func main() {
 		}
 
 		client.SetVersion(version)
+	}
 
-		if *ipv4 {
-			err = client.ConnectIPv4()
-		} else if *ipv6 {
-			err = client.ConnectIPv6()
-		} else {
-			err = client.Connect()
-		}
-		if err != nil {
-			nagios.ExitError(err)
-		}
+	// Initialize connection
+	if *ipv4 {
+		err = client.ConnectIPv4()
+	} else if *ipv6 {
+		err = client.ConnectIPv6()
+	} else {
+		err = client.Connect()
+	}
 
-		defer func() {
-			_ = client.Close()
-		}()
+	if err != nil {
+		nagios.ExitError(err)
+	}
 
-		cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
-		if err != nil {
-			nagios.ExitError(err)
-		}
+	defer func() {
+		_ = client.Close()
+	}()
 
-		driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
-		if err != nil {
-			nagios.ExitError(err)
-		}
+	// Load controller data
+	cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
+	if err != nil {
+		nagios.ExitError(err)
+	}
+
+	// Load drive data
+	driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
+	if err != nil {
+		nagios.ExitError(err)
 	}
 
 	if len(cntlrTable.Snmp.Values) == 0 {
