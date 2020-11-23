@@ -63,6 +63,11 @@ func ParseWalkLine(line string) (pdu *gosnmp.SnmpPDU, err error) {
 		return
 	}
 
+	err = IsValidOid(parts[0])
+	if err != nil {
+		return
+	}
+
 	pdu = &gosnmp.SnmpPDU{
 		Name: parts[0],
 	}
@@ -139,4 +144,36 @@ func ParseWalkLine(line string) (pdu *gosnmp.SnmpPDU, err error) {
 	}
 
 	return
+}
+
+// Test if an OID is in a valid format like `.1.23.456`
+func IsValidOid(oid string) error {
+	if len(oid) == 0 {
+		return fmt.Errorf("oid is empty")
+	} else if oid[0] != '.' {
+		return fmt.Errorf("invalid oid, must begin with a dot: %s", oid)
+	}
+
+	chars := 0
+
+	for _, c := range oid {
+		chars++
+
+		if c != '.' && !(c >= '0' && c <= '9') {
+			return fmt.Errorf("illegal char #%d in oid: %s", chars, oid)
+		}
+	}
+
+	return nil
+}
+
+// Test an OID, but prefix a missing dot
+//
+// Useful to be compatible with the base implementation of SNMP, where it is optional.
+func EnsureValidOid(oid string) (string, error) {
+	if oid[0] != '.' {
+		oid = "." + oid
+	}
+
+	return oid, IsValidOid(oid)
 }
