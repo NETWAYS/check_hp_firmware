@@ -8,6 +8,6 @@ require (
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20200511232937-7e40ca221e25 // indirect
 )
