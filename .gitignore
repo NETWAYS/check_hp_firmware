@@ -8,6 +8,7 @@
 
 # Binaries for programs and plugins
 /build/
+/dist/
 *.exe
 *.exe~
 *.dll

@@ -1,15 +1,25 @@
 package main
 
-const Project = "check_hp_firmware"
-const Version = "1.2.0"
+import "fmt"
 
-var GitCommit string
+// nolint: gochecknoglobals
+var (
+	version = "1.2.0"
+	commit  = ""
+	date    = ""
+)
 
+//goland:noinspection GoBoolExpressions
 func buildVersion() string {
-	version := Version
-	if GitCommit != "" {
-		version += " - " + GitCommit
+	result := version
+
+	if commit != "" {
+		result = fmt.Sprintf("%s\ncommit: %s", result, commit)
 	}
 
-	return version
+	if date != "" {
+		result = fmt.Sprintf("%s\ndate: %s", result, date)
+	}
+
+	return result
 }
