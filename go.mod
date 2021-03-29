@@ -6,10 +6,8 @@ require (
 	github.com/gosnmp/gosnmp v1.30.0
 	github.com/mcuadros/go-version v0.0.0-20190830083331-035f6764e8d2
 	github.com/mitchellh/go-ps v1.0.0
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/sys v0.0.0-20200511232937-7e40ca221e25 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
-	rsc.io/quote/v3 v3.1.0 // indirect
+	golang.org/x/sys v0.0.0-20210326220804-49726bf1d181 // indirect
 )
