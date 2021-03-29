@@ -1,35 +1,51 @@
 name: Go
 on:
   push:
+    branches: [ master ]
     tags:
       - v*
-    branches:
-      - master
-  pull_request: {}
+  pull_request:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.16
-        id: go
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
-
-      - name: Go Test
-        run: make test
-
-      - name: Go Build
-        run: make build
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
         with:
-          name: check_hp_firmware
-          path: build
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Test
+        run: go test -v ./...
+
+      - name: Build
+        run: go build -v .
+
+      - name: Run goreleaser in snapshot mode
+        if: success() && ! startsWith(github.ref, 'refs/tags/v')
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist --snapshot
+
+      - name: Upload assets for snapshots
+        if: success() && ! startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v2
+        with:
+          name: check_cloud_gcp
+          path: dist/*
+
+      - name: Run goreleaser in release mode
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

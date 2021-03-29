@@ -91,7 +91,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Printf("%s version %s\n", Project, buildVersion())
+		fmt.Printf("%s version %s\n", "check_hp_firmware", buildVersion())
 		os.Exit(nagios.Unknown)
 	}
 
