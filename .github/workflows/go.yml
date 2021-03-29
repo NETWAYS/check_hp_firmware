@@ -12,15 +12,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        go: [ '1.14', '1.15' ]
-
     steps:
-      - name: Set up Go ${{ matrix.go }}
+      - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: ${{ matrix.go }}
+          go-version: 1.16
         id: go
 
       - name: Check out code into the Go module directory
@@ -35,5 +31,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: check_hp_firmware-${{ matrix.go }}
+          name: check_hp_firmware
           path: build

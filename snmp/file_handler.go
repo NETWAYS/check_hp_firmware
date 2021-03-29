@@ -76,7 +76,7 @@ func (h *FileHandler) Get(oids []string) (result *gosnmp.SnmpPacket, err error) 
 
 // Not yet implemented
 func (h *FileHandler) GetBulk(oids []string, nonRepeaters uint8,
-	maxRepetitions uint8) (result *gosnmp.SnmpPacket, err error) {
+	maxRepetitions uint32) (result *gosnmp.SnmpPacket, err error) {
 	panic("not implemented")
 }
 
