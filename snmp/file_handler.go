@@ -66,6 +66,11 @@ func (h *FileHandler) Get(oids []string) (result *gosnmp.SnmpPacket, err error) 
 	}
 
 	for _, oid := range oids {
+		oid, err = EnsureValidOid(oid)
+		if err != nil {
+			return
+		}
+
 		if pdu, ok := h.Data[oid]; ok {
 			result.Variables = append(result.Variables, *pdu)
 		}
@@ -87,6 +92,11 @@ func (h *FileHandler) GetNext(oids []string) (result *gosnmp.SnmpPacket, err err
 
 // Simulating Walk() behavior by searching read in data
 func (h *FileHandler) Walk(rootOid string, walkFn gosnmp.WalkFunc) (err error) {
+	rootOid, err = EnsureValidOid(rootOid)
+	if err != nil {
+		return
+	}
+
 	for oid, pdu := range h.Data {
 		if !IsOidPartOf(oid, rootOid) {
 			continue
