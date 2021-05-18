@@ -1,17 +1,14 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
 	"github.com/NETWAYS/check_hp_firmware/hp/ilo"
 	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
-	"github.com/NETWAYS/check_hp_firmware/nagios"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
+	"github.com/NETWAYS/go-check"
+	"github.com/NETWAYS/go-check/result"
 	"github.com/gosnmp/gosnmp"
-	log "github.com/sirupsen/logrus"
-	flag "github.com/spf13/pflag"
-	"os"
 	"time"
 )
 
@@ -70,55 +67,27 @@ affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 
 // Check for HP Controller CVEs via SNMP
 func main() {
-	flagSet := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-	flagSet.SortFlags = false
+	config := check.NewConfig()
+	config.Name = "check_hp_firmware"
+	config.Readme = Readme
+	config.Version = buildVersion()
+	config.Timeout = 15
 
-	host := flagSet.StringP("hostname", "H", "localhost", "SNMP host")
-	community := flagSet.StringP("community", "c", "public", "SNMP community")
-	protocol := flagSet.StringP("protocol", "P", "2c", "SNMP protocol")
-	timeout := flagSet.Int64("timeout", 15, "SNMP timeout in seconds")
+	var (
+		fs        = config.FlagSet
+		host      = fs.StringP("hostname", "H", "localhost", "SNMP host")
+		community = fs.StringP("community", "c", "public", "SNMP community")
+		protocol  = fs.StringP("protocol", "P", "2c", "SNMP protocol")
+		file      = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
+		ignoreIlo = fs.Bool("ignore-ilo-version", false, "Don't check the ILO version")
+		ipv4      = fs.BoolP("ipv4", "4", false, "Use IPv4")
+		ipv6      = fs.BoolP("ipv6", "6", false, "Use IPv6")
+	)
 
-	file := flagSet.String("snmpwalk-file", "", "Read output from snmpwalk")
+	_ = fs.BoolP("ilo", "I", false, "Checks the version of iLo")
+	_ = fs.MarkHidden("ilo")
 
-	ignoreIlo := flagSet.Bool("ignore-ilo-version", false, "Don't check the ILO version")
-	_ = flagSet.BoolP("ilo", "I", false, "Checks the version of iLo")
-	_ = flagSet.MarkHidden("ilo")
-
-	ipv4 := flagSet.BoolP("ipv4", "4", false, "Use IPv4")
-	ipv6 := flagSet.BoolP("ipv6", "6", false, "Use IPv6")
-
-	version := flagSet.BoolP("version", "V", false, "Show version")
-
-	debug := flagSet.Bool("debug", false, "Enable debug output")
-
-	flagSet.Usage = func() {
-		fmt.Printf("Usage: %s [-H <hostname>] [-c <community>]\n", os.Args[0])
-		fmt.Println(Readme)
-		fmt.Printf("Version: %s\n", buildVersion())
-		fmt.Println()
-		fmt.Println("Arguments:")
-		flagSet.PrintDefaults()
-	}
-
-	err := flagSet.Parse(os.Args[1:])
-	if err != nil {
-		if errors.Is(err, flag.ErrHelp) {
-			nagios.ExitError(err)
-		}
-
-		os.Exit(3)
-	}
-
-	if *version {
-		fmt.Printf("%s version %s\n", "check_hp_firmware", buildVersion())
-		os.Exit(nagios.Unknown)
-	}
-
-	if *debug {
-		log.SetLevel(log.DebugLevel)
-	} else {
-		defer nagios.CatchPanic()
-	}
+	config.ParseArguments()
 
 	var (
 		client     gosnmp.Handler
@@ -126,21 +95,22 @@ func main() {
 		driveTable *phy_drv.CpqDaPhyDrvTable
 	)
 
+	var err error
 	if *file != "" {
 		client, err = snmp.NewFileHandlerFromFile(*file)
 		if err != nil {
-			nagios.ExitError(err)
+			check.ExitError(err)
 		}
 	} else {
 		client = gosnmp.NewHandler()
 		client.SetTarget(*host)
 		client.SetCommunity(*community)
-		client.SetTimeout(time.Duration(*timeout) * time.Second)
+		client.SetTimeout(time.Duration(config.Timeout) - 1*time.Second)
 		client.SetRetries(1)
 
 		version, err := snmp.VersionFromString(*protocol)
 		if err != nil {
-			nagios.ExitError(err)
+			check.ExitError(err)
 		}
 
 		client.SetVersion(version)
@@ -156,7 +126,7 @@ func main() {
 	}
 
 	if err != nil {
-		nagios.ExitError(err)
+		check.ExitError(err)
 	}
 
 	defer func() {
@@ -166,40 +136,40 @@ func main() {
 	// Load controller data
 	cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
 	if err != nil {
-		nagios.ExitError(err)
+		check.ExitError(err)
 	}
 
 	// Load drive data
 	driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
 	if err != nil {
-		nagios.ExitError(err)
+		check.ExitError(err)
 	}
 
 	if len(cntlrTable.Snmp.Values) == 0 {
-		nagios.Exit(3, "No HP controller data found!")
+		check.Exit(3, "No HP controller data found!")
 	}
 
 	controllers, err := cntlr.GetControllersFromTable(cntlrTable)
 	if err != nil {
-		nagios.ExitError(err)
+		check.ExitError(err)
 	}
 
 	if len(driveTable.Snmp.Values) == 0 {
-		nagios.Exit(3, "No HP drive data found!")
+		check.Exit(3, "No HP drive data found!")
 	}
 
 	drives, err := phy_drv.GetPhysicalDrivesFromTable(driveTable)
 	if err != nil {
-		nagios.ExitError(err)
+		check.ExitError(err)
 	}
 
-	overall := nagios.Overall{}
+	overall := result.Overall{}
 
 	// check the ILO Version unless set
 	if !*ignoreIlo {
 		iloData, err := ilo.GetIloInformation(client)
 		if err != nil {
-			nagios.ExitError(err)
+			check.ExitError(err)
 		}
 
 		overall.Add(iloData.GetNagiosStatus())
@@ -230,14 +200,14 @@ func main() {
 	status := overall.GetStatus()
 
 	switch status {
-	case nagios.OK:
+	case check.OK:
 		summary = fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives)
-	case nagios.Warning:
+	case check.Warning:
 		summary = fmt.Sprintf("Found %d warnings", overall.Warnings)
-	case nagios.Critical:
+	case check.Critical:
 		summary = fmt.Sprintf("Found %d critical problems", overall.Criticals)
 	}
 
 	overall.Summary = summary
-	nagios.Exit(status, overall.GetOutput())
+	check.Exit(status, overall.GetOutput())
 }

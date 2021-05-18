@@ -1,7 +1,7 @@
 package phy_drv
 
 import (
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -26,25 +26,25 @@ func TestPhysicalDrive_GetNagiosStatus(t *testing.T) {
 
 	// good
 	status, info = drive.GetNagiosStatus()
-	assert.Equal(t, nagios.OK, status)
+	assert.Equal(t, check.OK, status)
 	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=HPD1 hours=1337`, info)
 
 	// failed
 	drive.Status = "failed"
 	status, info = drive.GetNagiosStatus()
-	assert.Equal(t, nagios.Critical, status)
+	assert.Equal(t, check.Critical, status)
 	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=HPD1 hours=1337 - status: failed`, info)
 
 	// affected
 	drive.Status = "ok"
 	drive.Model = affectedDrive
 	status, info = drive.GetNagiosStatus()
-	assert.Equal(t, nagios.Critical, status)
+	assert.Equal(t, check.Critical, status)
 	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=HPD1 hours=1337 - affected`, info)
 
 	// affected but fixed
 	drive.FwRev = affectedDriveFixed
 	status, info = drive.GetNagiosStatus()
-	assert.Equal(t, nagios.OK, status)
+	assert.Equal(t, check.OK, status)
 	assert.Regexp(t, `\(1\.1 \) model=\w+ serial=ABC123 firmware=\w+ hours=1337 - .*applied`, info)
 }

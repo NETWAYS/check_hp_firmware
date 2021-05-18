@@ -1,7 +1,7 @@
 package ilo
 
 import (
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -14,24 +14,24 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 	}
 
 	state, output := ilo.GetNagiosStatus()
-	assert.Equal(t, nagios.Critical, state)
+	assert.Equal(t, check.Critical, state)
 	assert.Contains(t, output, "too old")
 
 	ilo.RomRevision = "2.18"
 	state, output = ilo.GetNagiosStatus()
-	assert.Equal(t, nagios.OK, state)
+	assert.Equal(t, check.OK, state)
 	assert.Contains(t, output, "2.18")
 
 	ilo.Model = "pciIntegratedLightsOutRemoteInsight2"
 	ilo.ModelID = 7
 	state, output = ilo.GetNagiosStatus()
-	assert.Equal(t, nagios.Critical, state)
+	assert.Equal(t, check.Critical, state)
 	assert.Contains(t, output, "pretty old")
 
 	ilo.Model = "someNewerModel"
 	ilo.ModelID = 12
 	state, output = ilo.GetNagiosStatus()
-	assert.Equal(t, nagios.OK, state)
+	assert.Equal(t, check.OK, state)
 	assert.Contains(t, output, "not known")
 }
 

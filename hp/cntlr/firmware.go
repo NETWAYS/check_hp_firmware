@@ -1,7 +1,7 @@
 package cntlr
 
 import (
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 	"github.com/mcuadros/go-version"
 )
 
@@ -27,18 +27,18 @@ func init() {
 // Note: we can't validate against existing logical drives at the moment
 func IsAffected(firmware string) (int, string) {
 	if version.Compare(firmware, VersionFixed, ">=") {
-		return nagios.OK, "firmware has been updated"
+		return check.OK, "firmware has been updated"
 	}
 
 	if version.Compare(firmware, VersionAffectedRaid1, ">=") {
-		return nagios.Critical, "if you have RAID 1/10/ADM - update immediately!"
+		return check.Critical, "if you have RAID 1/10/ADM - update immediately!"
 	}
 
 	for _, v := range VersionAffectedRaid5 {
 		if v == firmware {
-			return nagios.Critical, "if you have RAID 5/6/50/60 - update immediately!"
+			return check.Critical, "if you have RAID 5/6/50/60 - update immediately!"
 		}
 	}
 
-	return nagios.OK, "firmware older than affected"
+	return check.OK, "firmware older than affected"
 }

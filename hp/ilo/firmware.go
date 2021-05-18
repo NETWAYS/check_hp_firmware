@@ -3,7 +3,7 @@ package ilo
 import (
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
-	"github.com/NETWAYS/check_hp_firmware/nagios"
+	"github.com/NETWAYS/go-check"
 	"github.com/gosnmp/gosnmp"
 	"github.com/hashicorp/go-version"
 )
@@ -43,11 +43,11 @@ func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 }
 
 func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
-	state = nagios.Unknown
+	state = check.Unknown
 
 	// Check if the SNMP id is an older model, then alert
 	if ilo.ModelID <= OlderModels {
-		state = nagios.Critical
+		state = check.Critical
 		output = fmt.Sprintf("ILO model %s (%d) is pretty old and likely unsafe", ilo.Model, ilo.ModelID)
 
 		return
@@ -56,7 +56,7 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 	// Check if we know fixed versions for the generation, other models are only reported
 	modelInfo, found := FixedVersionMap[ilo.Model]
 	if !found {
-		state = nagios.OK
+		state = check.OK
 		output = fmt.Sprintf("Integrated Lights-Out model %s (%d) revision %s not known for any issues",
 			ilo.Model, ilo.ModelID, ilo.RomRevision)
 
@@ -66,10 +66,10 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 	output = fmt.Sprintf("Integrated Lights-Out %s revision %s ", modelInfo.Name, ilo.RomRevision)
 
 	if !CompareVersion(modelInfo.FixedRelease, ilo.RomRevision) {
-		state = nagios.Critical
+		state = check.Critical
 		output += "- version too old, should be at least " + modelInfo.FixedRelease
 	} else {
-		state = nagios.OK
+		state = check.OK
 		output += "- version newer than affected"
 	}
 
