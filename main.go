@@ -79,7 +79,10 @@ func main() {
 	timeout := flagSet.Int64("timeout", 15, "SNMP timeout in seconds")
 
 	file := flagSet.String("snmpwalk-file", "", "Read output from snmpwalk")
-	checkIlo := flagSet.BoolP("ilo", "I", false, "Checks the version of iLo")
+
+	ignoreIlo := flagSet.Bool("ignore-ilo-version", false, "Don't check the ILO version")
+	_ = flagSet.BoolP("ilo", "I", false, "Checks the version of iLo")
+	_ = flagSet.MarkHidden("ilo")
 
 	ipv4 := flagSet.BoolP("ipv4", "4", false, "Use IPv4")
 	ipv6 := flagSet.BoolP("ipv6", "6", false, "Use IPv6")
@@ -192,6 +195,16 @@ func main() {
 
 	overall := nagios.Overall{}
 
+	// check the ILO Version unless set
+	if !*ignoreIlo {
+		iloData, err := ilo.GetIloInformation(client)
+		if err != nil {
+			nagios.ExitError(err)
+		}
+
+		overall.Add(iloData.GetNagiosStatus())
+	}
+
 	countControllers := 0
 
 	for _, controller := range controllers {
@@ -210,13 +223,6 @@ func main() {
 		overall.Add(driveStatus, desc)
 
 		countDrives += 1
-	}
-
-	// ILo Data
-
-	if *checkIlo {
-		iloStatus, desc := ilo.GetIloInformation(client)
-		overall.Add(iloStatus, desc)
 	}
 
 	var summary string

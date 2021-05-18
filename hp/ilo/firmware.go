@@ -9,76 +9,83 @@ import (
 )
 
 type Ilo struct {
+	ModelID     int
 	Model       string
 	RomRevision string
 }
 
-func GetIloInformation(client gosnmp.Handler) (int, string)  {
+func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 	oidModel := []string{mib.CpqSm2CntlrModel + ".0"}
-	oidRev := []string{ mib.CpqSm2CntlrRomRevision + ".0"}
+	oidRev := []string{mib.CpqSm2CntlrRomRevision + ".0"}
 
-	ilo := &Ilo{}
-	parseErr := ""
+	ilo = &Ilo{}
 
 	iloModel, err := client.Get(oidModel)
 	if err != nil {
-		return nagios.Critical, parseErr + "could not get model for Ilo"
+		err = fmt.Errorf("could not get model for Ilo: %s", oidModel[0])
+		return
+	}
+
+	ilo.ModelID = iloModel.Variables[0].Value.(int)
+	if model, ok := mib.CpqSm2CntlrModelMap[ilo.ModelID]; ok {
+		ilo.Model = model
 	}
 
 	iloRev, err := client.Get(oidRev)
 	if err != nil {
-		return nagios.Critical, parseErr + "could not get revision for Ilo"
-	} else {
-		ilo.RomRevision = iloRev.Variables[0].Value.(string)
+		err = fmt.Errorf("could not get revision for Ilo: %s", oidRev[0])
+		return
 	}
 
-	if iloModel, ok := mib.CpqSm2CntlrModelMap[iloModel.Variables[0].Value.(int)]; ok {
-		ilo.Model = iloModel
-	} else {
-		return nagios.Critical, parseErr + "unknown Ilo model"
-	}
+	ilo.RomRevision = iloRev.Variables[0].Value.(string)
 
-	description := fmt.Sprintf("Integrated Lights-Out=%s Revision=%s ", ilo.Model, ilo.RomRevision)
-
-	if ilo.Model == "3" {
-		if ( ! CompareVer("1.93", iloRev.Variables[0].Value.(string))) {
-			return nagios.Critical, description +
-				fmt.Sprintf("The Revision: %s does not satisfies constraints 1.93. Update Firmware immediately!",
-				ilo.RomRevision)
-		}
-	} else if ilo.Model == "4" {
-		if ( ! CompareVer("2.75", iloRev.Variables[0].Value.(string))) {
-			return nagios.Critical, description +
-				fmt.Sprintf("The Revision: %s does not satisfies constraints 2.75 Update Firmware immediately!",
-				ilo.RomRevision)
-		}
-	} else if ilo.Model == "5" {
-		if ( ! CompareVer("2.18", iloRev.Variables[0].Value.(string))) {
-			return nagios.Critical, description +
-				fmt.Sprintf("The Revision: %s does not satisfies constraints 2.18 Update Firmware immediately!",
-				ilo.RomRevision)
-		}
-	} else {
-		return nagios.Critical, description + fmt.Sprintf("the Ilo Version is to old")
-	}
-
-	return nagios.OK, description + fmt.Sprintf("The Revision:%s satisfies constraints", ilo.RomRevision)
+	return
 }
 
-func CompareVer(constr, vers string) (ret bool) {
-	v, err := version.NewVersion(vers)
-	if err != nil{
-		return false
+func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
+	state = nagios.Unknown
+
+	// Check if the SNMP id is an older model, then alert
+	if ilo.ModelID <= OlderModels {
+		state = nagios.Critical
+		output = fmt.Sprintf("ILO model %s (%d) is pretty old and likely unsafe", ilo.Model, ilo.ModelID)
+
+		return
 	}
 
-	c, err := version.NewConstraint(">=" + constr)
+	// Check if we know fixed versions for the generation, other models are only reported
+	modelInfo, found := FixedVersionMap[ilo.Model]
+	if !found {
+		state = nagios.OK
+		output = fmt.Sprintf("Integrated Lights-Out model %s (%d) revision %s not known for any issues",
+			ilo.Model, ilo.ModelID, ilo.RomRevision)
+
+		return
+	}
+
+	output = fmt.Sprintf("Integrated Lights-Out %s revision %s ", modelInfo.Name, ilo.RomRevision)
+
+	if !CompareVersion(modelInfo.FixedRelease, ilo.RomRevision) {
+		state = nagios.Critical
+		output += "- version too old, should be at least " + modelInfo.FixedRelease
+	} else {
+		state = nagios.OK
+		output += "- version newer than affected"
+	}
+
+	return
+}
+
+func CompareVersion(required, current string) bool {
+	v, err := version.NewVersion(current)
 	if err != nil {
 		return false
 	}
 
-	if c.Check(v) {
-		return true
+	c, err := version.NewConstraint(">=" + required)
+	if err != nil {
+		panic(err)
 	}
 
-	return false
+	return c.Check(v)
 }
