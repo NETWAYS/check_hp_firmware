@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
+	"github.com/NETWAYS/check_hp_firmware/hp/ilo"
 	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
 	"github.com/NETWAYS/check_hp_firmware/nagios"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
@@ -15,7 +16,7 @@ import (
 )
 
 const Readme = `
-Icinga / Nagios check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
+Icinga / Nagios check plugin to verify HPE controllers an SSD disks or ilo are not affected by certain vulnerabilities.
 
 **HPE Controllers**
 
@@ -42,10 +43,24 @@ plugin does not verify configured logical drives, but we believe you should upda
 The check will raise a CRITICAL when the drive needs to be updated with the note "affected by FW bug", and when
 the drive is patched with "firmware update applied".
 
+**HPE Integrated Lights-Out**
+  Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
+  Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
+  exploited to execute code, cause denial of service, and expose sensitive information. HPE has released updated
+  firmware to mitigate these vulnerabilities.
+
+  The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
+  the least version of each Integrated Lights-Out version:
+   - HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
+   - HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
+   - HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
+
+
 Please see support documents from HPE:
 * https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us
 * https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us
 * https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097210en_us
+* https://support.hpe.com/hpesc/public/docDisplay?docId=hpesbhf04012en_us
 
 **IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
 affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
@@ -64,6 +79,10 @@ func main() {
 	timeout := flagSet.Int64("timeout", 15, "SNMP timeout in seconds")
 
 	file := flagSet.String("snmpwalk-file", "", "Read output from snmpwalk")
+
+	ignoreIlo := flagSet.Bool("ignore-ilo-version", false, "Don't check the ILO version")
+	_ = flagSet.BoolP("ilo", "I", false, "Checks the version of iLo")
+	_ = flagSet.MarkHidden("ilo")
 
 	ipv4 := flagSet.BoolP("ipv4", "4", false, "Use IPv4")
 	ipv6 := flagSet.BoolP("ipv6", "6", false, "Use IPv6")
@@ -175,6 +194,16 @@ func main() {
 	}
 
 	overall := nagios.Overall{}
+
+	// check the ILO Version unless set
+	if !*ignoreIlo {
+		iloData, err := ilo.GetIloInformation(client)
+		if err != nil {
+			nagios.ExitError(err)
+		}
+
+		overall.Add(iloData.GetNagiosStatus())
+	}
 
 	countControllers := 0
 

@@ -32,10 +32,24 @@ plugin does not verify configured logical drives, but we believe you should upda
 The check will raise a CRITICAL when the drive needs to be updated with the note `affected by FW bug`, and when
 the drive is patched with `firmware update applied`.
 
+**HPE Integrated Lights-Out**
+
+Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
+Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
+exploited to execute code, cause denial of service, and expose sensitive information. HPE has released updated
+firmware to mitigate these vulnerabilities.
+
+The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
+the least version of each Integrated Lights-Out version:
+- HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
+- HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
+- HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
+
 Please see support documents from HPE:
 * [a00092491](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us)
 * [a00097382](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us)
 * [a00097210](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097210en_us)
+* [HPESBHF04012](https://support.hpe.com/hpesc/public/docDisplay?docId=hpesbhf04012en_us)
 
 **IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
 affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
@@ -51,6 +65,7 @@ Arguments:
       -P, --protocol string        SNMP protocol (default "2c")
           --timeout int            SNMP timeout in seconds (default 15)
           --snmpwalk-file string   Read output from snmpwalk
+          --ignore-ilo-version     Don't check the ILO version
       -4, --ipv4                   Use IPv4
       -6, --ipv6                   Use IPv6
       -V, --version                Show version
@@ -79,6 +94,7 @@ You can download or build the project locally with go:
 ## Example
 
     OK - All 2 controllers and 33 drives seem fine
+    [OK] Integrated Lights-Out 5 revision 2.18 - version newer than affected
     [OK] controller (0) model=p816i-a serial=XXX firmware=1.65 - firmware older than affected
     [OK] controller (4) model=p408e-p serial=XXX firmware=1.65 - firmware older than affected
     [OK] (0.9 ) model=MO003200JWFWR serial=XXX firmware=HPD2 hours=8086
@@ -132,9 +148,9 @@ so we can provide you with a secure upload link, that won't be shared with publi
 
 ## Technical Details
 
-Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/phy_drv](hp/phy_drv)
+Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/phy_drv](hp/phy_drv) [hp/ilo](hp/ilo)
 
-Known models and affected firmware is documented in: [hp/cntlr/firmware_data.go](hp/cntlr/firmware_data.go) [hp/phy_drv/firmware_data.go](hp/phy_drv/firmware_data.go)
+Known models and affected firmware is documented in: [hp/cntlr/firmware_data.go](hp/cntlr/firmware_data.go) [hp/phy_drv/firmware_data.go](hp/phy_drv/firmware_data.go) [hp/ilo/firmware_data.go](hp/ilo/firmware_data.go)
 
 This data can be easily enhanced in the future. Make sure to document source documents and versions as well, and check
 the accompanying firmware and status functions.
