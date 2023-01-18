@@ -4,9 +4,10 @@ import "fmt"
 
 // nolint: gochecknoglobals
 var (
-	version = "1.3.0"
-	commit  = ""
-	date    = ""
+	// These get filled at build time with the proper vaules
+	version = "development"
+	commit  = "HEAD"
+	date    = "latest"
 )
 
 //goland:noinspection GoBoolExpressions
