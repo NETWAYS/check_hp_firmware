@@ -43,6 +43,7 @@ func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 }
 
 func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
+	// nolint: ineffassign
 	state = check.Unknown
 
 	// Check if the SNMP id is an older model, then alert
