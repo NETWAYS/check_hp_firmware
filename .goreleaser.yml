@@ -18,8 +18,8 @@ builds:
         -X main.date={{.CommitDate}}
 release:
   github:
-  extra_files:
-    - glob: icinga2.conf
+    owner: NETWAYS
+    name: check_hp_firmware
 archives:
   - format: binary
     replacements:
@@ -30,7 +30,7 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
 changelog:
   sort: asc
   filters:
