@@ -77,7 +77,7 @@ Simply run the command:
 
 ## Installation
 
-This is a golang project, either download the binary from the releases:
+This is a Golang project, either download the binary from the releases:
 
 https://github.com/NETWAYS/check_hp_firmware/releases
 
@@ -86,7 +86,7 @@ Also see the included [CheckCommand for Icinga 2](icinga2.conf).
 You can download or build the project locally with go:
 
     $ go get github.com/NETWAYS/check_hp_cve
-    
+
     $ git clone https://github.com/NETWAYS/check_hp_firmware
     $ cd check_hp_firmware/
     $ go build -o check_hp_firmware .
@@ -142,7 +142,7 @@ If you find bugs or want to add features, please open an issue or pull-request o
 You can help with problems by supplying the output of snmpwalk for the system you experience problems with:
 
     $ snmpwalk -c public -v2c -On HOST 1.3.6.1.4.1.232
-    
+
 Please make sure to either censor the output of any private information, or send an e-mail to support@netways.de,
 so we can provide you with a secure upload link, that won't be shared with public.
 
@@ -160,9 +160,9 @@ IPMI agent or the locally installed HP tools, hooked into the SNMP daemon of the
 
 ## License
 
-Copyright (C) 2020 Markus Frosch <markus.frosch@netways.de>
-
 Copyright (C) 2020 NETWAYS <info@netways.de>
+
+Copyright (C) 2020 Markus Frosch <markus.frosch@netways.de>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
