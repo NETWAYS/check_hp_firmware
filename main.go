@@ -17,12 +17,12 @@ Icinga / Nagios check plugin to verify HPE controllers an SSD disks or ilo are n
 
 **HPE Controllers**
 
-  HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
-  required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
-  Version 1.98 through 2.62, based on the following scenarios. HPE strongly recommends performing this upgrade at the
-  customer's earliest opportunity per the "Action Required" in the table located in the Resolution section.
-  Neglecting to perform the recommended resolution could result in potential subsequent errors and potential data
-  inconsistency.
+	HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
+	required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
+	Version 1.98 through 2.62, based on the following scenarios. HPE strongly recommends performing this upgrade at the
+	customer's earliest opportunity per the "Action Required" in the table located in the Resolution section.
+	Neglecting to perform the recommended resolution could result in potential subsequent errors and potential data
+	inconsistency.
 
 The check will alert you with a CRITICAL when the firmware is in the affected range with:
 
@@ -34,23 +34,23 @@ plugin does not verify configured logical drives, but we believe you should upda
 
 **HPE SSD SAS disks**
 
-  HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
-  Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
+	HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
+	Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
 
 The check will raise a CRITICAL when the drive needs to be updated with the note "affected by FW bug", and when
 the drive is patched with "firmware update applied".
 
 **HPE Integrated Lights-Out**
-  Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
-  Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
-  exploited to execute code, cause denial of service, and expose sensitive information. HPE has released updated
-  firmware to mitigate these vulnerabilities.
+	Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
+	Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
+	exploited to execute code, cause denial of service, and expose sensitive information. HPE has released updated
+	firmware to mitigate these vulnerabilities.
 
-  The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
-  the least version of each Integrated Lights-Out version:
-   - HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
-   - HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
-   - HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
+	The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
+	the least version of each Integrated Lights-Out version:
+	 - HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
+	 - HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
+	 - HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
 
 
 Please see support documents from HPE:
@@ -203,9 +203,9 @@ func main() {
 	case check.OK:
 		summary = fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives)
 	case check.Warning:
-		summary = fmt.Sprintf("Found %d warnings", overall.Warnings)
+		summary = fmt.Sprintf("Found %d warnings", overall.GetStatus())
 	case check.Critical:
-		summary = fmt.Sprintf("Found %d critical problems", overall.Criticals)
+		summary = fmt.Sprintf("Found %d critical problems", overall.GetStatus())
 	}
 
 	overall.Summary = summary
