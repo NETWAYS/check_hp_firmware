@@ -146,7 +146,7 @@ func main() {
 	}
 
 	if len(cntlrTable.Snmp.Values) == 0 {
-		check.Exit(3, "No HP controller data found!")
+		check.ExitRaw(3, "No HP controller data found!")
 	}
 
 	controllers, err := cntlr.GetControllersFromTable(cntlrTable)
@@ -155,7 +155,7 @@ func main() {
 	}
 
 	if len(driveTable.Snmp.Values) == 0 {
-		check.Exit(3, "No HP drive data found!")
+		check.ExitRaw(3, "No HP drive data found!")
 	}
 
 	drives, err := phy_drv.GetPhysicalDrivesFromTable(driveTable)
@@ -209,5 +209,5 @@ func main() {
 	}
 
 	overall.Summary = summary
-	check.Exit(status, overall.GetOutput())
+	check.ExitRaw(status, overall.GetOutput())
 }
