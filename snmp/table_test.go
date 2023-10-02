@@ -1,17 +1,11 @@
 package snmp
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
-)
 
-func init() {
-	if os.Getenv("SNMP_DEBUG") != "" {
-		log.SetLevel(log.DebugLevel)
-	}
-}
+	"github.com/stretchr/testify/assert"
+)
 
 func TestSnmpTable_Walk(t *testing.T) {
 	if os.Getenv("NETWORK_TESTS_ENABLED") == "" {
