@@ -2,15 +2,17 @@ package snmp
 
 import (
 	"fmt"
-	"github.com/gosnmp/gosnmp"
 	"io"
 	"os"
+
+	"github.com/gosnmp/gosnmp"
 )
 
 // Provides a GoSNMP like data interface, but with data from a snmpwalk output
 //
 // Anyone can generate an output by running:
-//  snmpwalk -c public -v2c -On HOST .1.3.6.1 >snmp-data.txt
+//
+//	snmpwalk -c public -v2c -On HOST .1.3.6.1 >snmp-data.txt
 //
 // Warning: This does not implement all functions of gosnmp.Handler
 type FileHandler struct {

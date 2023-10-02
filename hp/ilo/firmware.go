@@ -2,6 +2,7 @@ package ilo
 
 import (
 	"fmt"
+
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/go-check"
 	"github.com/gosnmp/gosnmp"

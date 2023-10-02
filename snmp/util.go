@@ -2,6 +2,7 @@ package snmp
 
 import (
 	"fmt"
+
 	"github.com/gosnmp/gosnmp"
 )
 
@@ -24,11 +25,7 @@ func IsOid(oid string) bool {
 		lastChar = char
 	}
 
-	if lastChar == '.' {
-		return false
-	}
-
-	return true
+	return lastChar != '.'
 }
 
 // IsOidPartOf tests if an OID is equal of below another OID

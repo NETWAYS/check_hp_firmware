@@ -1,6 +1,5 @@
 package mib
 
-//noinspection GoUnusedConst,SpellCheckingInspection
 const (
 	CpqDaPhyDrvTable               = `.1.3.6.1.4.1.232.3.2.5.1`
 	CpqDaPhyDrvCntlrIndex          = `.1.3.6.1.4.1.232.3.2.5.1.1.1`

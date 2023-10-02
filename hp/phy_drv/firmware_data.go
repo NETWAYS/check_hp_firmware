@@ -12,7 +12,7 @@ const FixedA = "HPD8"
 
 const FixedB = "HPD7"
 
-//AffectedModelList list of model numbers for drives that are affected with their description as value
+// AffectedModelList list of model numbers for drives that are affected with their description as value
 var AffectedModelList = []*AffectedModel{
 	// Drives from bulletin A
 	{"VO0480JFDGT", "HP 480 GB 12 Gbit SAS 2.5\" RI PLP SC SSD", FixedA},
@@ -33,7 +33,7 @@ var AffectedModelList = []*AffectedModel{
 	{"VK001920JWSSR", "HPE 1,92 TB SAS RI SFF SC DS SSD", FixedA},
 	{"VK003840JWSST", "HPE 3,84 TB SAS RI SFF SC DS SSD", FixedA},
 	// duplicate
-	//{"VK003840JWSST", "HPE 3,84 TB SAS RI LFF SCC DS SPL SSD", FixedA},
+	// {"VK003840JWSST", "HPE 3,84 TB SAS RI LFF SCC DS SPL SSD", FixedA},
 	{"VK007680JWSSU", "HPE 7,68 TB SAS RI SFF SC DS SSD", FixedA},
 	{"VO015300JWSSV", "HPE 15,3 TB SAS RI SFF SC DS SSD", FixedA},
 

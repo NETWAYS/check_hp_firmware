@@ -1,19 +1,51 @@
 run:
-  deadline: 1m
+  timeout: 5m
+  tests: false
+
+issues:
+  exclude-rules:
+    - path: 'hp/'
+      linters:
+        - nosnakecase
+        - stylecheck
+    - path: 'main.go'
+      linters:
+        - nosnakecase
+    - path: 'hp/ilo/firmware.go'
+      linters:
+        - wastedassign
 
 linters:
-  disable-all: false
-  enable:
-    # - funlen
-    - dogsled
-    - dupl
-    - lll
-    - whitespace
-    - wsl
-  disable:
-    - govet # temporary
-  presets:
-    - bugs
-    - unused
-    # - style
-  fast: false
+   enable-all: true
+   disable:
+     - golint # TODO fix
+     - revive
+     - cyclop
+     - depguard
+     - dupl
+     - exhaustivestruct
+     - exhaustruct
+     - forbidigo
+     - forcetypeassert
+     - gci
+     - gochecknoglobals
+     - gochecknoinits
+     - godot
+     - godox
+     - goerr113
+     - gofumpt
+     - gomnd
+     - lll
+     - musttag
+     - nakedret
+     - nlreturn
+     - nolintlint
+     - nonamedreturns
+     - tagliatelle
+     - varnamelen
+     - wrapcheck
+linters-settings:
+   estif:
+     min-complexity: 4
+   maligned:
+     suggest-new: true

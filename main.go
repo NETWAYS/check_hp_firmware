@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
 	"github.com/NETWAYS/check_hp_firmware/hp/ilo"
 	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
@@ -9,7 +11,6 @@ import (
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/result"
 	"github.com/gosnmp/gosnmp"
-	"time"
 )
 
 const Readme = `
@@ -66,6 +67,7 @@ affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 `
 
 // Check for HP Controller CVEs via SNMP
+// nolint: funlen
 func main() {
 	config := check.NewConfig()
 	config.Name = "check_hp_firmware"
@@ -117,6 +119,7 @@ func main() {
 	}
 
 	// Initialize connection
+	// nolint: gocritic
 	if *ipv4 {
 		err = client.ConnectIPv4()
 	} else if *ipv6 {
