@@ -1,6 +1,5 @@
 package mib
 
-//noinspection GoUnusedConst,SpellCheckingInspection
 const (
 	CpqDaCntlrTable                 = `.1.3.6.1.4.1.232.3.2.2.1`
 	CpqDaCntlrEntry                 = `.1.3.6.1.4.1.232.3.2.2.1.1`

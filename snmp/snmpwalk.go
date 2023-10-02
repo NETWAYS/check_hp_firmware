@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"encoding/hex"
 	"fmt"
-	"github.com/gosnmp/gosnmp"
 	"io"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/gosnmp/gosnmp"
 )
 
 var (
@@ -49,12 +50,12 @@ func ReadWalk(r io.Reader) (pduList WalkData, err error) {
 	return
 }
 
+// nolint: funlen
 func ParseWalkLine(line string) (pdu *gosnmp.SnmpPDU, err error) {
 	parts := strings.SplitN(line, " = ", 2)
 
 	if len(parts) != 2 || !IsOid(parts[0]) {
 		// TODO: This can be the case for wrapped Hex-STRING lines, we are ignoring it for now...
-		//err = fmt.Errorf("not a key = value line")
 		return
 	}
 

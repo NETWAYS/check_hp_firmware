@@ -11,7 +11,7 @@ var VersionAffectedRaid5 = []string{"1.98", "1.99", "2.02", "2.03"}
 
 const VersionFixed = "2.65"
 
-//AffectedModelList list of model numbers for controllers
+// AffectedModelList list of model numbers for controllers
 var AffectedModelList = []*AffectedModel{
 	{"e208i-p"},
 	{"e208i-a"},

@@ -16,7 +16,7 @@ type AffectedIndex map[string]*AffectedModel
 
 var (
 	AffectedModels = AffectedIndex{}
-	versionRE = regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
+	versionRE      = regexp.MustCompile(`^([A-Z]+)([0-9]+)$`)
 )
 
 func init() {

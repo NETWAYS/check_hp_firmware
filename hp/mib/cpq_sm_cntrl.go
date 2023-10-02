@@ -1,6 +1,5 @@
 package mib
 
-//noinspection GoUnusedConst,SpellCheckingInspection
 const (
 	CpqSm2Cntlr                               = `.1.3.6.1.4.1.232.9.2.2`
 	CpqSm2CntlrRomDate                        = `.1.3.6.1.4.1.232.9.2.2.1`

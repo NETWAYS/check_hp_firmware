@@ -2,9 +2,10 @@ package cntlr
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/go-check"
-	"strings"
 )
 
 type Controller struct {
@@ -61,7 +62,7 @@ func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) 
 }
 
 func GetControllersFromTable(t *CpqDaCntlrTable) ([]*Controller, error) {
-	var controllers []*Controller
+	controllers := make([]*Controller, 0, len(t.ListIds()))
 
 	for _, id := range t.ListIds() {
 		controller, err := NewControllerFromTable(t, id)

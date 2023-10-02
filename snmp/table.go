@@ -2,11 +2,12 @@ package snmp
 
 import (
 	"fmt"
+	"sort"
+	"strings"
+
 	"github.com/gosnmp/gosnmp"
 	"github.com/mcuadros/go-version"
 	log "github.com/sirupsen/logrus"
-	"sort"
-	"strings"
 )
 
 type Table struct {
@@ -141,7 +142,8 @@ func (t *Table) GetIntValue(id string, oid string) (int, error) {
 }
 
 func (t *Table) GetSortedOIDs() []string {
-	var ids []string
+	ids := make([]string, 0, len(t.Values))
+
 	for k := range t.Values {
 		ids = append(ids, k)
 	}

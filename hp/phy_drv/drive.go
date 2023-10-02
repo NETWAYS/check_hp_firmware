@@ -2,6 +2,7 @@ package phy_drv
 
 import (
 	"fmt"
+
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"
 	"github.com/NETWAYS/go-check"
 )
@@ -16,7 +17,7 @@ type PhysicalDrive struct {
 }
 
 func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, error) {
-	if _, ok := t.Snmp.Values[id];!ok {
+	if _, ok := t.Snmp.Values[id]; !ok {
 		return nil, fmt.Errorf("could not find drive %s in table", id)
 	}
 
@@ -61,7 +62,7 @@ func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, 
 }
 
 func GetPhysicalDrivesFromTable(t *CpqDaPhyDrvTable) ([]*PhysicalDrive, error) {
-	var drives []*PhysicalDrive
+	drives := make([]*PhysicalDrive, 0, len(t.ListIds()))
 
 	for _, id := range t.ListIds() {
 		drive, err := NewPhysicalDriveFromTable(t, id)
@@ -85,6 +86,7 @@ func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 
 	if model, affected := AffectedModels[d.Model]; affected {
 		ok, err := IsFirmwareFixed(model, d.FwRev)
+		// nolint: gocritic
 		if err != nil {
 			return check.Unknown, description + " - error: " + err.Error()
 		} else if ok {
