@@ -7,7 +7,6 @@ import (
 
 	"github.com/gosnmp/gosnmp"
 	"github.com/mcuadros/go-version"
-	log "github.com/sirupsen/logrus"
 )
 
 type Table struct {
@@ -29,10 +28,6 @@ func (t *Table) Reset() {
 func (t *Table) Walk() error {
 	t.Reset()
 
-	log.WithFields(log.Fields{
-		"oid": t.Oid,
-	}).Debug("Starting walk for table")
-
 	if err := t.Client.Walk(t.Oid, t.addWalkValue); err != nil {
 		return err
 	}
@@ -40,10 +35,6 @@ func (t *Table) Walk() error {
 	if len(t.Values) == 0 {
 		return fmt.Errorf("no data retrieved in walk for table: %s", t.Oid)
 	}
-
-	log.WithFields(log.Fields{
-		"tableValues": t.Values,
-	}).Debug("read table data from SNMP walk")
 
 	return nil
 }
@@ -71,16 +62,9 @@ func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
 		return fmt.Errorf("could not identify entry, column and id in oid: %s", data.Name)
 	}
 
-	entry := parts[0]
+	// entry := parts[0]
 	column := parts[1]
 	id := strings.Join(parts[2:], ".")
-
-	log.WithFields(log.Fields{
-		"oid":    data.Name,
-		"entry":  entry,
-		"column": column,
-		"id":     id,
-	}).Debug("Reading PDU data")
 
 	if _, ok := t.Values[id]; !ok {
 		t.Values[id] = TableColumns{}
