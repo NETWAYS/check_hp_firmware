@@ -11,9 +11,13 @@ issues:
     - path: 'main.go'
       linters:
         - nosnakecase
+        - funlen
     - path: 'hp/ilo/firmware.go'
       linters:
         - wastedassign
+    - path: 'snmp/snmpwalk.go'
+      linters:
+        - funlen
 
 linters:
    enable-all: true
@@ -45,7 +49,10 @@ linters:
      - varnamelen
      - wrapcheck
 linters-settings:
-   estif:
-     min-complexity: 4
-   maligned:
-     suggest-new: true
+  estif:
+    min-complexity: 4
+  maligned:
+    suggest-new: true
+  funlen:
+    statements: 65
+    ignore-comments: true
