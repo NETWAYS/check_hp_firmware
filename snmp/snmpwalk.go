@@ -50,7 +50,6 @@ func ReadWalk(r io.Reader) (pduList WalkData, err error) {
 	return
 }
 
-// nolint: funlen
 func ParseWalkLine(line string) (pdu *gosnmp.SnmpPDU, err error) {
 	parts := strings.SplitN(line, " = ", 2)
 

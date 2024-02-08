@@ -67,7 +67,6 @@ affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
 `
 
 // Check for HP Controller CVEs via SNMP
-// nolint: funlen
 func main() {
 	config := check.NewConfig()
 	config.Name = "check_hp_firmware"
