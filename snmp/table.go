@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gosnmp/gosnmp"
-	"github.com/mcuadros/go-version"
+	"github.com/hashicorp/go-version"
 )
 
 type Table struct {
@@ -137,7 +137,9 @@ func (t *Table) GetSortedOIDs() []string {
 
 func SortOIDs(list []string) []string {
 	sort.Slice(list, func(i, j int) bool {
-		return version.Compare(list[i], list[j], "<")
+		v1, _ := version.NewVersion(list[i])
+		v2, _ := version.NewVersion(list[j])
+		return v1.LessThan(v2)
 	})
 
 	return list
