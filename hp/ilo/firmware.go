@@ -15,6 +15,8 @@ type Ilo struct {
 	RomRevision string
 }
 
+// GetIloInformation retrieves the iLO's Model and Rom Revision via SNMP
+// and returns an Ilo struct.
 func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 	oidModel := []string{mib.CpqSm2CntlrModel + ".0"}
 	oidRev := []string{mib.CpqSm2CntlrRomRevision + ".0"}
@@ -43,6 +45,8 @@ func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 	return
 }
 
+// GetNagiosStatus validates the iLO's data against the known models
+// in this plugin.
 func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 	// nolint: ineffassign
 	state = check.Unknown
@@ -67,7 +71,7 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 
 	output = fmt.Sprintf("Integrated Lights-Out %s revision %s ", modelInfo.Name, ilo.RomRevision)
 
-	if !CompareVersion(modelInfo.FixedRelease, ilo.RomRevision) {
+	if !isNewerVersion(modelInfo.FixedRelease, ilo.RomRevision) {
 		state = check.Critical
 		output += "- version too old, should be at least " + modelInfo.FixedRelease
 	} else {
@@ -78,7 +82,8 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 	return
 }
 
-func CompareVersion(required, current string) bool {
+// isNewerVersion compares the current version against the required version
+func isNewerVersion(required, current string) bool {
 	v, err := version.NewVersion(current)
 	if err != nil {
 		return false
@@ -86,6 +91,7 @@ func CompareVersion(required, current string) bool {
 
 	c, err := version.NewConstraint(">=" + required)
 	if err != nil {
+		// TODO remove panic
 		panic(err)
 	}
 

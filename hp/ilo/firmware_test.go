@@ -60,15 +60,15 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 
 }
 
-func TestCompareVer(t *testing.T) {
+func TestIsNewerVersion(t *testing.T) {
 	// Compare required Version with current Version
-	assert.True(t, CompareVersion("1.0", "1.0"))
-	assert.True(t, CompareVersion("1.0", "1.1"))
-	assert.True(t, CompareVersion("1.0", "5"))
-	assert.True(t, CompareVersion("1.0", "10.1.0"))
+	assert.True(t, isNewerVersion("1.0", "1.0"))
+	assert.True(t, isNewerVersion("1.0", "1.1"))
+	assert.True(t, isNewerVersion("1.0", "5"))
+	assert.True(t, isNewerVersion("1.0", "10.1.0"))
 
-	assert.False(t, CompareVersion("1.0", "0.9"))
-	assert.False(t, CompareVersion("1.0", "0.9"))
-	assert.False(t, CompareVersion("1.0", "0.0"))
-	assert.False(t, CompareVersion("1.0", "0"))
+	assert.False(t, isNewerVersion("1.0", "0.9"))
+	assert.False(t, isNewerVersion("1.0", "0.9"))
+	assert.False(t, isNewerVersion("1.0", "0.0"))
+	assert.False(t, isNewerVersion("1.0", "0"))
 }
