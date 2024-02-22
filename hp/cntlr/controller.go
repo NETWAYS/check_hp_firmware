@@ -9,7 +9,7 @@ import (
 )
 
 type Controller struct {
-	Id     string
+	ID     string
 	Model  string
 	FwRev  string
 	Serial string
@@ -24,7 +24,7 @@ func NewControllerFromTable(t *CpqDaCntlrTable, id string) (*Controller, error) 
 	var err error
 
 	controller := &Controller{}
-	controller.Id = id
+	controller.ID = id
 
 	modelI, err := t.GetIntValue(id, mib.CpqDaCntlrModel)
 	if err != nil {
@@ -78,7 +78,7 @@ func GetControllersFromTable(t *CpqDaCntlrTable) ([]*Controller, error) {
 
 func (d *Controller) GetNagiosStatus() (int, string) {
 	description := fmt.Sprintf("controller (%s) model=%s serial=%s firmware=%s",
-		d.Id, d.Model, strings.TrimSpace(d.Serial), d.FwRev)
+		d.ID, d.Model, strings.TrimSpace(d.Serial), d.FwRev)
 
 	if d.Status != "ok" {
 		return check.Critical, description + " - status: " + d.Status

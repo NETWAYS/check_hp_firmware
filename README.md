@@ -1,13 +1,14 @@
-check_hp_firmware
-=================
+# check_hp_firmware
 
-![Go build](https://github.com/NETWAYS/check_hp_firmware/workflows/Go/badge.svg?branch=master)
+Monitoring check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
 
-<!-- Note: Update `Readme` in main.go when changing this! -->
+*Note:* This plugin was initially named `check_hp_disk_firmware`.
 
-Icinga / Nagios check plugin to verify HPE controllers an SSD disks are not affected by certain vulnerabilities.
+Current Limitations:
 
-**HPE Controllers**
+* No SNMPv3 support is implemented
+
+## HPE Controllers
 
 > HPE Smart Array SR Gen10 Controller Firmware Version 2.65 (or later) provided in the (HPE document a00097210) is
 > required to prevent a potential data inconsistency on select RAID configurations with Smart Array Gen10 Firmware
@@ -24,7 +25,7 @@ The check will alert you with a CRITICAL when the firmware is in the affected ra
 And it will add a short note when `firmware older than affected` or `firmware has been updated`. At the moment the
 plugin does not verify configured logical drives, but we believe you should update in any case.
 
-**HPE SSD SAS disks**
+## HPE SSD SAS disks
 
 > HPE SAS Solid State Drives - Critical Firmware Upgrade Required for Certain HPE SAS Solid State Drive Models to
 > Prevent Drive Failure at 32,768 or 40,000 Hours of Operation
@@ -32,7 +33,7 @@ plugin does not verify configured logical drives, but we believe you should upda
 The check will raise a CRITICAL when the drive needs to be updated with the note `affected by FW bug`, and when
 the drive is patched with `firmware update applied`.
 
-**HPE Integrated Lights-Out**
+## HPE Integrated Lights-Out
 
 Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
 Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
@@ -41,41 +42,39 @@ firmware to mitigate these vulnerabilities.
 
 The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
 the least version of each Integrated Lights-Out version:
+
 - HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
 - HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
 - HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
 
-Please see support documents from HPE:
-* [a00092491](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00092491en_us)
-* [a00097382](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097382en_us)
-* [a00097210](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00097210en_us)
-* [HPESBHF04012](https://support.hpe.com/hpesc/public/docDisplay?docId=hpesbhf04012en_us)
+**IMPORTANT:** Always read the latest HPE Security Bulletins. https://support.hpe.com/connect/s/securitybulletinlibrary
 
-**IMPORTANT:** Read the documentation for HPE! The plugin and its documentation is a best effort to find and detect
-affected hardware. There is ABSOLUTELY NO WARRANTY, see the license!
-
-> **Note:** This plugin was initially named check_hp_disk_firmware
+The plugin and its documentation is a best effort to find and detect affected hardware. There is no warranty, see the license.
 
 ## Usage
 
 Arguments:
 
-      -H, --hostname string        SNMP host (default "localhost")
-      -c, --community string       SNMP community (default "public")
-      -P, --protocol string        SNMP protocol (default "2c")
-          --timeout int            SNMP timeout in seconds (default 15)
-          --snmpwalk-file string   Read output from snmpwalk
-          --ignore-ilo-version     Don't check the ILO version
-      -4, --ipv4                   Use IPv4
-      -6, --ipv6                   Use IPv6
-      -V, --version                Show version
-          --debug                  Enable debug output
+```
+-H, --hostname string        SNMP host (default "localhost")
+-c, --community string       SNMP community (default "public")
+-P, --protocol string        SNMP protocol (default "2c")
+    --timeout int            SNMP timeout in seconds (default 15)
+    --snmpwalk-file string   Read output from snmpwalk
+    --ignore-ilo-version     Don't check the ILO version
+-4, --ipv4                   Use IPv4
+-6, --ipv6                   Use IPv6
+-V, --version                Show version
+    --debug                  Enable debug output
+```
 
 Simply run the command:
 
-    $ ./check_hp_firmware -H localhost -c public
+```bash
+check_hp_firmware -H localhost -c public
+```
 
-## Installation
+# Installation
 
 This is a Golang project, either download the binary from the releases:
 
@@ -85,11 +84,11 @@ Also see the included [CheckCommand for Icinga 2](icinga2.conf).
 
 You can download or build the project locally with go:
 
-    $ go get github.com/NETWAYS/check_hp_cve
-
-    $ git clone https://github.com/NETWAYS/check_hp_firmware
-    $ cd check_hp_firmware/
-    $ go build -o check_hp_firmware .
+```bash
+git clone https://github.com/NETWAYS/check_hp_firmware
+cd check_hp_firmware/
+make build
+```
 
 ## Example
 
@@ -99,43 +98,17 @@ You can download or build the project locally with go:
     [OK] controller (4) model=p408e-p serial=XXX firmware=1.65 - firmware older than affected
     [OK] (0.9 ) model=MO003200JWFWR serial=XXX firmware=HPD2 hours=8086
     [OK] (0.11) model=EK000400GWEPE serial=XXX firmware=HPG0 hours=8086
-    [OK] (0.12) model=EK000400GWEPE serial=XXX firmware=HPG0 hours=8086
     [OK] (0.14) model=MO003200JWFWR serial=XXX firmware=HPD2 hours=8086
     [OK] (4.0 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.1 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.2 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.3 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.4 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.5 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.6 ) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.24) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.25) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.26) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.27) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.28) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.29) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.30) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.31) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.50) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.51) model=MO003200JWFWR serial=XXX firmware=HPD2 hours=7568
     [OK] (4.52) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.53) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.54) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.55) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.56) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.75) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.76) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.77) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.78) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.79) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
-    [OK] (4.80) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
     [OK] (4.81) model=MO3200JFFCL serial=XXX firmware=HPD8 hours=7568 - firmware update applied
 
-## Limitations
 
-* No SNMPv3 support is implemented
-
-## Contribute
+# Contribute
 
 If you find bugs or want to add features, please open an issue or pull-request on GitHub.
 
@@ -148,7 +121,7 @@ so we can provide you with a secure upload link, that won't be shared with publi
 
 ## Technical Details
 
-Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/phy_drv](hp/phy_drv) [hp/ilo](hp/ilo)
+Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/drive](hp/drive) [hp/ilo](hp/ilo)
 
 Known models and affected firmware is documented in: [hp/cntlr/firmware_data.go](hp/cntlr/firmware_data.go) [hp/phy_drv/firmware_data.go](hp/phy_drv/firmware_data.go) [hp/ilo/firmware_data.go](hp/ilo/firmware_data.go)
 
@@ -158,7 +131,7 @@ the accompanying firmware and status functions.
 The check reads the `cpqDaCntlrTable` and `cpqDaPhyDrvTable` tables from SNMP, which should be available over the
 IPMI agent or the locally installed HP tools, hooked into the SNMP daemon of the operating system.
 
-## License
+# License
 
 Copyright (C) 2020 NETWAYS <info@netways.de>
 

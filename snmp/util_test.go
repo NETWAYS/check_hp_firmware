@@ -1,10 +1,11 @@
 package snmp
 
 import (
-	"github.com/gosnmp/gosnmp"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/gosnmp/gosnmp"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIsOid(t *testing.T) {

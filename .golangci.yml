@@ -18,11 +18,13 @@ issues:
     - path: 'snmp/snmpwalk.go'
       linters:
         - funlen
+    - path: 'hp/mib/cpq_sm_cntrl.go'
+      linters:
+        - golint
 
 linters:
    enable-all: true
    disable:
-     - golint # TODO fix
      - revive
      - cyclop
      - depguard
