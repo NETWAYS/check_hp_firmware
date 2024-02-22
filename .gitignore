@@ -5,6 +5,8 @@
 /.idea/
 [._]*.sw[a-p]
 *~
+\#*
+.\#*
 
 # Binaries for programs and plugins
 /build/
