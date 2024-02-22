@@ -61,7 +61,7 @@ Arguments:
 -P, --protocol string        SNMP protocol (default "2c")
     --timeout int            SNMP timeout in seconds (default 15)
     --snmpwalk-file string   Read output from snmpwalk
-    --ignore-ilo-version     Don't check the ILO version
+-I, --ignore-ilo-version     Don't check the ILO version
 -4, --ipv4                   Use IPv4
 -6, --ipv6                   Use IPv6
 -V, --version                Show version
