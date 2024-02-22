@@ -50,14 +50,10 @@ func main() {
 		community = fs.StringP("community", "c", "public", "SNMP community")
 		protocol  = fs.StringP("protocol", "P", "2c", "SNMP protocol")
 		file      = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
-		ignoreIlo = fs.Bool("ignore-ilo-version", false, "Don't check the ILO version")
+		ignoreIlo = fs.BoolP("ignore-ilo-version", "I", false, "Don't check the ILO version")
 		ipv4      = fs.BoolP("ipv4", "4", false, "Use IPv4")
 		ipv6      = fs.BoolP("ipv6", "6", false, "Use IPv6")
 	)
-
-	// TODO What's the use of this hidden flag?
-	_ = fs.BoolP("ilo", "I", false, "Checks the version of iLo")
-	_ = fs.MarkHidden("ilo")
 
 	config.ParseArguments()
 
