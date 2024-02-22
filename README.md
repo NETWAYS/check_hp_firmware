@@ -43,9 +43,9 @@ firmware to mitigate these vulnerabilities.
 The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
 the least version of each Integrated Lights-Out version:
 
-- HPE Integrated Lights-Out 3 (iLO 3) firmware v1.93 or later.
-- HPE Integrated Lights-Out 4 (iLO 4) firmware v2.75 or later
-- HPE Integrated Lights-Out 5 (iLO 5) firmware v2.18 or later.
+- HPE iLO 6 v1.56 or later
+- HPE iLO 5 v3.01 or later
+- HPE iLO 4 v2.82 or later
 
 **IMPORTANT:** Always read the latest HPE Security Bulletins. https://support.hpe.com/connect/s/securitybulletinlibrary
 
