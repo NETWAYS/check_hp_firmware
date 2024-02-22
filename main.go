@@ -20,6 +20,7 @@ var (
 	date    = "latest"
 )
 
+// buildVersion builds and returns the string for the --version flag
 func buildVersion() string {
 	result := version
 
@@ -34,16 +35,15 @@ func buildVersion() string {
 	return result
 }
 
-const Readme = "Monitoring plugin to verify HPE controllers an SSD disks or iLO are not affected by certain vulnerabilities."
-
 // Check for HP Controller CVEs via SNMP
 func main() {
 	config := check.NewConfig()
 	config.Name = "check_hp_firmware"
-	config.Readme = Readme
+	config.Readme = "Monitoring plugin to verify HPE controllers an SSD disks or iLO are not affected by certain vulnerabilities."
 	config.Version = buildVersion()
 	config.Timeout = 15
 
+	// Variables for CLI flags
 	var (
 		fs        = config.FlagSet
 		host      = fs.StringP("hostname", "H", "localhost", "SNMP host")
@@ -55,18 +55,23 @@ func main() {
 		ipv6      = fs.BoolP("ipv6", "6", false, "Use IPv6")
 	)
 
+	// TODO What's the use of this hidden flag?
 	_ = fs.BoolP("ilo", "I", false, "Checks the version of iLo")
 	_ = fs.MarkHidden("ilo")
 
 	config.ParseArguments()
 
 	var (
-		client     gosnmp.Handler
-		cntlrTable *cntlr.CpqDaCntlrTable
-		driveTable *drive.CpqDaPhyDrvTable
+		client           gosnmp.Handler
+		cntlrTable       *cntlr.CpqDaCntlrTable
+		countControllers int
+		countDrives      int
+		driveTable       *drive.CpqDaPhyDrvTable
+		err              error
+		summary          string
 	)
 
-	var err error
+	// Initialize SNMP Client
 	if *file != "" {
 		client, err = snmp.NewFileHandlerFromFile(*file)
 		if err != nil {
@@ -121,7 +126,9 @@ func main() {
 		check.ExitRaw(3, "No HP controller data found!")
 	}
 
+	// Extract controller data from SNMP Table
 	controllers, err := cntlr.GetControllersFromTable(cntlrTable)
+
 	if err != nil {
 		check.ExitError(err)
 	}
@@ -130,44 +137,38 @@ func main() {
 		check.ExitRaw(3, "No HP drive data found!")
 	}
 
+	// Extract drive data from SNMP Table
 	drives, err := drive.GetPhysicalDrivesFromTable(driveTable)
 	if err != nil {
 		check.ExitError(err)
 	}
 
+	// Overall is a singleton that has several partial results
 	overall := result.Overall{}
 
-	// check the ILO Version unless set
+	// Load iLO Version if flag is set
 	if !*ignoreIlo {
 		iloData, err := ilo.GetIloInformation(client)
 		if err != nil {
 			check.ExitError(err)
 		}
-
+		// Retrieve the status from the iLO and add the result
 		overall.Add(iloData.GetNagiosStatus())
 	}
 
-	countControllers := 0
-
+	// Retrieve the status from each controller and add the result
 	for _, controller := range controllers {
 		controllerStatus, desc := controller.GetNagiosStatus()
-
 		overall.Add(controllerStatus, desc)
-
 		countControllers++
 	}
 
-	countDrives := 0
-
+	// Retrieve the status from each drive and add the result
 	for _, drive := range drives {
 		driveStatus, desc := drive.GetNagiosStatus()
-
 		overall.Add(driveStatus, desc)
-
 		countDrives++
 	}
-
-	var summary string
 
 	status := overall.GetStatus()
 
