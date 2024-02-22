@@ -84,16 +84,12 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 
 // isNewerVersion compares the current version against the required version
 func isNewerVersion(required, current string) bool {
-	v, err := version.NewVersion(current)
-	if err != nil {
+	currentVersion, cErr := version.NewVersion(current)
+	requiredVersion, rErr := version.NewVersion(required)
+
+	if cErr != nil || rErr != nil {
 		return false
 	}
 
-	c, err := version.NewConstraint(">=" + required)
-	if err != nil {
-		// TODO remove panic
-		panic(err)
-	}
-
-	return c.Check(v)
+	return currentVersion.GreaterThanOrEqual(requiredVersion)
 }

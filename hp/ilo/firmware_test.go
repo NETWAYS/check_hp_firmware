@@ -72,4 +72,8 @@ func TestIsNewerVersion(t *testing.T) {
 	assert.False(t, isNewerVersion("1.0", "0.9"))
 	assert.False(t, isNewerVersion("1.0", "0.0"))
 	assert.False(t, isNewerVersion("1.0", "0"))
+
+	assert.False(t, isNewerVersion("1.0", "foobar"))
+	assert.False(t, isNewerVersion("foobar", "1.0"))
+	assert.False(t, isNewerVersion("xxx", "xxx"))
 }
