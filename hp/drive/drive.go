@@ -76,6 +76,8 @@ func GetPhysicalDrivesFromTable(t *CpqDaPhyDrvTable) ([]*PhysicalDrive, error) {
 	return drives, nil
 }
 
+// GetNagiosStatus validates the drive's data against the known models
+// in this plugin.
 func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 	description := fmt.Sprintf("physical drive (%-4s) model=%s serial=%s firmware=%s hours=%d",
 		d.ID, d.Model, d.Serial, d.FwRev, d.Hours)

@@ -58,7 +58,6 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 			assert.Contains(t, output, tc.expectedOutput)
 		})
 	}
-
 }
 
 func TestIsNewerVersion(t *testing.T) {

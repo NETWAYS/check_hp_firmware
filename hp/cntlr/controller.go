@@ -76,6 +76,8 @@ func GetControllersFromTable(t *CpqDaCntlrTable) ([]*Controller, error) {
 	return controllers, nil
 }
 
+// GetNagiosStatus validates the Controller's data against the known models
+// in this plugin.
 func (d *Controller) GetNagiosStatus() (int, string) {
 	description := fmt.Sprintf("controller (%s) model=%s serial=%s firmware=%s",
 		d.ID, d.Model, strings.TrimSpace(d.Serial), d.FwRev)
