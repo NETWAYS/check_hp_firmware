@@ -1,4 +1,4 @@
-package phy_drv
+package drive
 
 import (
 	"github.com/NETWAYS/check_hp_firmware/hp/mib"

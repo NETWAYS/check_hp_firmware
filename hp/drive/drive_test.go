@@ -1,9 +1,10 @@
-package phy_drv
+package drive
 
 import (
+	"testing"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 const affectedDrive = "VO0480JFDGT"
@@ -11,7 +12,7 @@ const affectedDriveFixed = "HPD8"
 
 func TestPhysicalDrive_GetNagiosStatus(t *testing.T) {
 	drive := &PhysicalDrive{
-		Id:     "1.1",
+		ID:     "1.1",
 		Model:  "OTHERDRIVE",
 		FwRev:  "HPD1",
 		Serial: "ABC123",

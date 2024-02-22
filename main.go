@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/NETWAYS/check_hp_firmware/hp/cntlr"
+	"github.com/NETWAYS/check_hp_firmware/hp/drive"
 	"github.com/NETWAYS/check_hp_firmware/hp/ilo"
-	"github.com/NETWAYS/check_hp_firmware/hp/phy_drv"
 	"github.com/NETWAYS/check_hp_firmware/snmp"
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/result"
@@ -63,7 +63,7 @@ func main() {
 	var (
 		client     gosnmp.Handler
 		cntlrTable *cntlr.CpqDaCntlrTable
-		driveTable *phy_drv.CpqDaPhyDrvTable
+		driveTable *drive.CpqDaPhyDrvTable
 	)
 
 	var err error
@@ -112,7 +112,7 @@ func main() {
 	}
 
 	// Load drive data
-	driveTable, err = phy_drv.GetCpqDaPhyDrvTable(client)
+	driveTable, err = drive.GetCpqDaPhyDrvTable(client)
 	if err != nil {
 		check.ExitError(err)
 	}
@@ -130,7 +130,7 @@ func main() {
 		check.ExitRaw(3, "No HP drive data found!")
 	}
 
-	drives, err := phy_drv.GetPhysicalDrivesFromTable(driveTable)
+	drives, err := drive.GetPhysicalDrivesFromTable(driveTable)
 	if err != nil {
 		check.ExitError(err)
 	}
@@ -154,7 +154,7 @@ func main() {
 
 		overall.Add(controllerStatus, desc)
 
-		countControllers += 1
+		countControllers++
 	}
 
 	countDrives := 0
@@ -164,7 +164,7 @@ func main() {
 
 		overall.Add(driveStatus, desc)
 
-		countDrives += 1
+		countDrives++
 	}
 
 	var summary string

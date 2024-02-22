@@ -121,7 +121,7 @@ so we can provide you with a secure upload link, that won't be shared with publi
 
 ## Technical Details
 
-Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/phy_drv](hp/phy_drv) [hp/ilo](hp/ilo)
+Supported hardware is split into modules: [hp/cntlr](hp/cntlr) [hp/drive](hp/drive) [hp/ilo](hp/ilo)
 
 Known models and affected firmware is documented in: [hp/cntlr/firmware_data.go](hp/cntlr/firmware_data.go) [hp/phy_drv/firmware_data.go](hp/phy_drv/firmware_data.go) [hp/ilo/firmware_data.go](hp/ilo/firmware_data.go)
 

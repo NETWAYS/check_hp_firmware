@@ -1,4 +1,4 @@
-package phy_drv
+package drive
 
 // Source A: https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-a00092491en_us
 // Version: 2

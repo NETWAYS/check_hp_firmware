@@ -1,4 +1,4 @@
-package phy_drv
+package drive
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 type PhysicalDrive struct {
-	Id     string
+	ID     string
 	Model  string
 	FwRev  string
 	Serial string
@@ -24,7 +24,7 @@ func NewPhysicalDriveFromTable(t *CpqDaPhyDrvTable, id string) (*PhysicalDrive, 
 	var err error
 
 	drive := &PhysicalDrive{
-		Id: id,
+		ID: id,
 	}
 
 	drive.Model, err = t.GetStringValue(id, mib.CpqDaPhyDrvModel)
@@ -78,7 +78,7 @@ func GetPhysicalDrivesFromTable(t *CpqDaPhyDrvTable) ([]*PhysicalDrive, error) {
 
 func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 	description := fmt.Sprintf("physical drive (%-4s) model=%s serial=%s firmware=%s hours=%d",
-		d.Id, d.Model, d.Serial, d.FwRev, d.Hours)
+		d.ID, d.Model, d.Serial, d.FwRev, d.Hours)
 
 	if d.Status != "ok" {
 		return check.Critical, description + " - status: " + d.Status

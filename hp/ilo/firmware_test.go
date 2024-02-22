@@ -1,9 +1,10 @@
 package ilo
 
 import (
+	"testing"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestIlo_GetNagiosStatus(t *testing.T) {

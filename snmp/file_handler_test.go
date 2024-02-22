@@ -1,9 +1,10 @@
 package snmp
 
 import (
+	"testing"
+
 	"github.com/gosnmp/gosnmp"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestNewFileHandlerFromFile(t *testing.T) {
