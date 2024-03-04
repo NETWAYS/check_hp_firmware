@@ -6,7 +6,7 @@ require (
 	github.com/NETWAYS/go-check v0.6.1
 	github.com/gosnmp/gosnmp v1.37.0
 	github.com/hashicorp/go-version v1.6.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 )
 
 require (
