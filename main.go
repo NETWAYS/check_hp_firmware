@@ -79,7 +79,7 @@ func main() {
 		client.SetTarget(*host)
 		client.SetPort(*port)
 		client.SetCommunity(*community)
-		client.SetTimeout(time.Duration(config.Timeout) - 1*time.Second)
+		client.SetTimeout(time.Duration(config.Timeout) * time.Second)
 		client.SetRetries(1)
 
 		version, err := snmp.VersionFromString(*protocol)
