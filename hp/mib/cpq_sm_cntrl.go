@@ -47,4 +47,5 @@ var CpqSm2CntlrModelMap = StringMap{
 	9:  "pciIntegratedLightsOutRemoteInsight3", // Integrated Lights-Out 3 Edition
 	10: "pciIntegratedLightsOutRemoteInsight4", // Integrated Lights-Out 4 Edition
 	11: "pciIntegratedLightsOutRemoteInsight5", // Integrated Lights-Out 5 Edition
+	12: "pciIntegratedLightsOutRemoteInsight6", // Integrated Lights-Out 6 Edition
 }

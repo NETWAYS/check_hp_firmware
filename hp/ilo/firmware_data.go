@@ -19,4 +19,5 @@ var FixedVersionMap = map[string]PlatformInfo{
 	"pciIntegratedLightsOutRemoteInsight3": {"3", "1.93"},
 	"pciIntegratedLightsOutRemoteInsight4": {"4", "2.82"},
 	"pciIntegratedLightsOutRemoteInsight5": {"5", "3.01"},
+	"pciIntegratedLightsOutRemoteInsight6": {"6", "1.56"},
 }
