@@ -49,6 +49,7 @@ func main() {
 		host      = fs.StringP("hostname", "H", "localhost", "SNMP host")
 		community = fs.StringP("community", "c", "public", "SNMP community")
 		protocol  = fs.StringP("protocol", "P", "2c", "SNMP protocol")
+		port      = fs.Uint16P("port", "p", 161, "SNMP port")
 		file      = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
 		ignoreIlo = fs.BoolP("ignore-ilo-version", "I", false, "Don't check the ILO version")
 		ipv4      = fs.BoolP("ipv4", "4", false, "Use IPv4")
@@ -76,8 +77,9 @@ func main() {
 	} else {
 		client = gosnmp.NewHandler()
 		client.SetTarget(*host)
+		client.SetPort(*port)
 		client.SetCommunity(*community)
-		client.SetTimeout(time.Duration(config.Timeout) - 1*time.Second)
+		client.SetTimeout(time.Duration(config.Timeout) * time.Second)
 		client.SetRetries(1)
 
 		version, err := snmp.VersionFromString(*protocol)
