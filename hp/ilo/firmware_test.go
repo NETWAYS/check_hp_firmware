@@ -3,6 +3,8 @@ package ilo
 import (
 	"testing"
 
+	"github.com/NETWAYS/check_hp_firmware/snmp"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,8 +21,8 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 				ModelID:     9,
 				RomRevision: "1.40",
 			},
-			expectedState:  check.Critical,
-			expectedOutput: "too old",
+			expectedState:  check.Warning,
+			expectedOutput: "Patch available",
 		},
 		"newer": {
 			ilo: Ilo{
@@ -53,7 +55,7 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 
 	for name, tc := range testcases {
 		t.Run(name, func(t *testing.T) {
-			state, output := tc.ilo.GetNagiosStatus()
+			state, output := tc.ilo.GetNagiosStatus(1)
 			assert.Equal(t, state, tc.expectedState)
 			assert.Contains(t, output, tc.expectedOutput)
 		})
@@ -75,4 +77,28 @@ func TestIsNewerVersion(t *testing.T) {
 	assert.False(t, isNewerVersion("1.0", "foobar"))
 	assert.False(t, isNewerVersion("foobar", "1.0"))
 	assert.False(t, isNewerVersion("xxx", "xxx"))
+}
+
+func TestGetIloInformation_ilo5(t *testing.T) {
+	c, _ := snmp.NewFileHandlerFromFile("../../testdata/ilo5.txt")
+
+	i, err := GetIloInformation(c)
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, 11, i.ModelID)
+	assert.Equal(t, "pciIntegratedLightsOutRemoteInsight5", i.Model)
+	assert.Equal(t, "3.00", i.RomRevision)
+}
+
+func TestGetIloInformation_ilo6(t *testing.T) {
+	c, _ := snmp.NewFileHandlerFromFile("../../testdata/ilo6.txt")
+
+	i, err := GetIloInformation(c)
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, 12, i.ModelID)
+	assert.Equal(t, "pciIntegratedLightsOutRemoteInsight6", i.Model)
+	assert.Equal(t, "1.55", i.RomRevision)
 }
