@@ -35,12 +35,7 @@ the drive is patched with `firmware update applied`.
 
 ## HPE Integrated Lights-Out
 
-Multiple security vulnerabilities have been identified in Integrated Lights-Out 3 (iLO 3),
-Integrated Lights-Out 4 (iLO 4), and Integrated Lights-Out 5 (iLO 5) firmware. The vulnerabilities could be remotely
-exploited to execute code, cause denial of service, and expose sensitive information. HPE has released updated
-firmware to mitigate these vulnerabilities.
-
-The check will raise a CRITICAL when the Integrated Lights-Out needs to be updated. Below you will find a list with
+The check will raise a WARNING when the Integrated Lights-Out needs to be updated. Below you will find a list with
 the least version of each Integrated Lights-Out version:
 
 - HPE iLO 6 v1.56 or later
@@ -61,6 +56,7 @@ Arguments:
 -P, --protocol string        SNMP protocol (default "2c")
     --timeout int            SNMP timeout in seconds (default 15)
     --snmpwalk-file string   Read output from snmpwalk
+-e, --ilo-exit-state int     Exit with specified code if iLO requires patch (default 1)
 -I, --ignore-ilo-version     Don't check the ILO version
 -D, --ignore-drives          Don't check the drive firmware
 -C, --ignore-controller      Don't check the controller firmware

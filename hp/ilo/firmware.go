@@ -53,7 +53,7 @@ func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 
 // GetNagiosStatus validates the iLO's data against the known models
 // in this plugin.
-func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
+func (ilo *Ilo) GetNagiosStatus(returnStateforPatch int) (state int, output string) {
 	// nolint: ineffassign
 	state = check.Unknown
 
@@ -78,8 +78,8 @@ func (ilo *Ilo) GetNagiosStatus() (state int, output string) {
 	output = fmt.Sprintf("Integrated Lights-Out %s revision %s ", modelInfo.Name, ilo.RomRevision)
 
 	if !isNewerVersion(modelInfo.FixedRelease, ilo.RomRevision) {
-		state = check.Critical
-		output += "- version too old, should be at least " + modelInfo.FixedRelease
+		state = returnStateforPatch
+		output += "- Patch available, should be at least " + modelInfo.FixedRelease
 	} else {
 		state = check.OK
 		output += "- version newer than affected"

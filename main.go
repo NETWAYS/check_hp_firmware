@@ -53,6 +53,7 @@ func main() {
 		protocol         = fs.StringP("protocol", "P", "2c", "SNMP protocol")
 		port             = fs.Uint16P("port", "p", 161, "SNMP port")
 		file             = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
+		iloExitState     = fs.IntP("ilo-exit-state", "e", 1, "Exit with specified code if iLO requires patch")
 		ignoreIlo        = fs.BoolP("ignore-ilo-version", "I", false, "Don't check the ILO version")
 		ignoreDrives     = fs.BoolP("ignore-drives", "D", false, "Don't check the drive firmware")
 		ignoreController = fs.BoolP("ignore-controller", "C", false, "Don't check the controller firmware")
@@ -122,7 +123,7 @@ func main() {
 			check.ExitError(err)
 		}
 		// Retrieve the status from the iLO and add the result
-		overall.Add(iloData.GetNagiosStatus())
+		overall.Add(iloData.GetNagiosStatus(*iloExitState))
 	}
 
 	// Load controller data

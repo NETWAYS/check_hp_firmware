@@ -21,8 +21,8 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 				ModelID:     9,
 				RomRevision: "1.40",
 			},
-			expectedState:  check.Critical,
-			expectedOutput: "too old",
+			expectedState:  check.Warning,
+			expectedOutput: "Patch available",
 		},
 		"newer": {
 			ilo: Ilo{
@@ -55,7 +55,7 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 
 	for name, tc := range testcases {
 		t.Run(name, func(t *testing.T) {
-			state, output := tc.ilo.GetNagiosStatus()
+			state, output := tc.ilo.GetNagiosStatus(1)
 			assert.Equal(t, state, tc.expectedState)
 			assert.Contains(t, output, tc.expectedOutput)
 		})
