@@ -62,6 +62,8 @@ Arguments:
     --timeout int            SNMP timeout in seconds (default 15)
     --snmpwalk-file string   Read output from snmpwalk
 -I, --ignore-ilo-version     Don't check the ILO version
+-D, --ignore-drives          Don't check the drive firmware
+-C, --ignore-controller      Don't check the controller firmware
 -4, --ipv4                   Use IPv4
 -6, --ipv6                   Use IPv6
 -V, --version                Show version

@@ -44,16 +44,20 @@ func main() {
 	config.Timeout = 15
 
 	// Variables for CLI flags
+	// Personally, I would have preferred to add "enable" flags that enable further subchecks.
+	// However, this would have broken the current behaviour completely. Thus I opted for "ignore" flags
 	var (
-		fs        = config.FlagSet
-		host      = fs.StringP("hostname", "H", "localhost", "SNMP host")
-		community = fs.StringP("community", "c", "public", "SNMP community")
-		protocol  = fs.StringP("protocol", "P", "2c", "SNMP protocol")
-		port      = fs.Uint16P("port", "p", 161, "SNMP port")
-		file      = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
-		ignoreIlo = fs.BoolP("ignore-ilo-version", "I", false, "Don't check the ILO version")
-		ipv4      = fs.BoolP("ipv4", "4", false, "Use IPv4")
-		ipv6      = fs.BoolP("ipv6", "6", false, "Use IPv6")
+		fs               = config.FlagSet
+		host             = fs.StringP("hostname", "H", "localhost", "SNMP host")
+		community        = fs.StringP("community", "c", "public", "SNMP community")
+		protocol         = fs.StringP("protocol", "P", "2c", "SNMP protocol")
+		port             = fs.Uint16P("port", "p", 161, "SNMP port")
+		file             = fs.String("snmpwalk-file", "", "Read output from snmpwalk")
+		ignoreIlo        = fs.BoolP("ignore-ilo-version", "I", false, "Don't check the ILO version")
+		ignoreDrives     = fs.BoolP("ignore-drives", "D", false, "Don't check the drive firmware")
+		ignoreController = fs.BoolP("ignore-controller", "C", false, "Don't check the controller firmware")
+		ipv4             = fs.BoolP("ipv4", "4", false, "Use IPv4")
+		ipv6             = fs.BoolP("ipv6", "6", false, "Use IPv6")
 	)
 
 	config.ParseArguments()
@@ -108,43 +112,10 @@ func main() {
 		_ = client.Close()
 	}()
 
-	// Load controller data
-	cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
-	if err != nil {
-		check.ExitError(err)
-	}
-
-	// Load drive data
-	driveTable, err = drive.GetCpqDaPhyDrvTable(client)
-	if err != nil {
-		check.ExitError(err)
-	}
-
-	if len(cntlrTable.Snmp.Values) == 0 {
-		check.ExitRaw(3, "No HP controller data found!")
-	}
-
-	// Extract controller data from SNMP Table
-	controllers, err := cntlr.GetControllersFromTable(cntlrTable)
-
-	if err != nil {
-		check.ExitError(err)
-	}
-
-	if len(driveTable.Snmp.Values) == 0 {
-		check.ExitRaw(3, "No HP drive data found!")
-	}
-
-	// Extract drive data from SNMP Table
-	drives, err := drive.GetPhysicalDrivesFromTable(driveTable)
-	if err != nil {
-		check.ExitError(err)
-	}
-
 	// Overall is a singleton that has several partial results
 	overall := result.Overall{}
 
-	// Load iLO Version if flag is set
+	// Load iLO Version data
 	if !*ignoreIlo {
 		iloData, err := ilo.GetIloInformation(client)
 		if err != nil {
@@ -154,20 +125,58 @@ func main() {
 		overall.Add(iloData.GetNagiosStatus())
 	}
 
-	// Retrieve the status from each controller and add the result
-	for _, controller := range controllers {
-		controllerStatus, desc := controller.GetNagiosStatus()
-		overall.Add(controllerStatus, desc)
-		countControllers++
+	// Load controller data
+	if !*ignoreController {
+		cntlrTable, err = cntlr.GetCpqDaCntlrTable(client)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		if len(cntlrTable.Snmp.Values) == 0 {
+			check.ExitRaw(3, "No HP controller data found!")
+		}
+
+		// Extract controller data from SNMP Table
+		controllers, err := cntlr.GetControllersFromTable(cntlrTable)
+
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		// Retrieve the status from each controller and add the result
+		for _, controller := range controllers {
+			controllerStatus, desc := controller.GetNagiosStatus()
+			overall.Add(controllerStatus, desc)
+			countControllers++
+		}
 	}
 
-	// Retrieve the status from each drive and add the result
-	for _, drive := range drives {
-		driveStatus, desc := drive.GetNagiosStatus()
-		overall.Add(driveStatus, desc)
-		countDrives++
+	// Load drive data
+	if !*ignoreDrives {
+		driveTable, err = drive.GetCpqDaPhyDrvTable(client)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		if len(driveTable.Snmp.Values) == 0 {
+			check.ExitRaw(3, "No HP drive data found!")
+		}
+
+		// Extract drive data from SNMP Table
+		drives, err := drive.GetPhysicalDrivesFromTable(driveTable)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		// Retrieve the status from each drive and add the result
+		for _, drive := range drives {
+			driveStatus, desc := drive.GetNagiosStatus()
+			overall.Add(driveStatus, desc)
+			countDrives++
+		}
 	}
 
+	// Get the overall status for all subchecks
 	status := overall.GetStatus()
 
 	switch status {
