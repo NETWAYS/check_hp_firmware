@@ -16,6 +16,7 @@ issues:
     - path: 'hp/ilo/firmware.go'
       linters:
         - wastedassign
+        - exhaustive
     - path: 'snmp/snmpwalk.go'
       linters:
         - funlen

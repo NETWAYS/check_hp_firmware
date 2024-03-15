@@ -18,29 +18,35 @@ type Ilo struct {
 // GetIloInformation retrieves the iLO's Model and Rom Revision via SNMP
 // and returns an Ilo struct.
 func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
-	oidModel := []string{mib.CpqSm2CntlrModel + ".0"}
-	oidRev := []string{mib.CpqSm2CntlrRomRevision + ".0"}
+	oids := []string{
+		mib.CpqSm2CntlrModel + ".0",
+		mib.CpqSm2CntlrRomRevision + ".0",
+	}
 
 	ilo = &Ilo{}
 
-	iloModel, err := client.Get(oidModel)
+	iloVariables, err := client.Get(oids)
+
 	if err != nil {
-		err = fmt.Errorf("could not get model for Ilo: %s", oidModel[0])
+		err = fmt.Errorf("could not get SNMP data for iLO: %w", err)
 		return
 	}
 
-	ilo.ModelID = iloModel.Variables[0].Value.(int)
-	if model, ok := mib.CpqSm2CntlrModelMap[ilo.ModelID]; ok {
-		ilo.Model = model
-	}
+	// Since we only have two variable of different type we don't need to check their names
+	for _, v := range iloVariables.Variables {
+		switch v.Type {
+		case gosnmp.OctetString: // CpqSm2CntlrRomRevision
+			// Using Sprintf makes this work for (string) and ([]byte)
+			ilo.RomRevision = fmt.Sprintf("%s", v.Value)
+		case gosnmp.Integer: // CpqSm2CntlrModel
+			modelID := v.Value.(int)
+			ilo.ModelID = modelID
 
-	iloRev, err := client.Get(oidRev)
-	if err != nil {
-		err = fmt.Errorf("could not get revision for Ilo: %s", oidRev[0])
-		return
+			if model, ok := mib.CpqSm2CntlrModelMap[modelID]; ok {
+				ilo.Model = model
+			}
+		}
 	}
-
-	ilo.RomRevision = iloRev.Variables[0].Value.(string)
 
 	return
 }
