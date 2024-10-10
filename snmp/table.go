@@ -139,6 +139,7 @@ func SortOIDs(list []string) []string {
 	sort.Slice(list, func(i, j int) bool {
 		v1, _ := version.NewVersion(list[i])
 		v2, _ := version.NewVersion(list[j])
+
 		return v1.LessThan(v2)
 	})
 

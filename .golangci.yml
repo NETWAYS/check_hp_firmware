@@ -20,6 +20,10 @@ issues:
     - path: 'snmp/snmpwalk.go'
       linters:
         - funlen
+        - perfsprint
+    - path: 'snmp/util.go'
+      linters:
+        - perfsprint
     - path: 'hp/mib/cpq_sm_cntrl.go'
       linters:
         - golint
@@ -43,6 +47,7 @@ linters:
      - goerr113
      - gofumpt
      - gomnd
+     - mnd
      - lll
      - musttag
      - nakedret

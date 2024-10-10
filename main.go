@@ -148,6 +148,7 @@ func main() {
 		for _, controller := range controllers {
 			controllerStatus, desc := controller.GetNagiosStatus()
 			overall.Add(controllerStatus, desc)
+
 			countControllers++
 		}
 	}
@@ -173,6 +174,7 @@ func main() {
 		for _, drive := range drives {
 			driveStatus, desc := drive.GetNagiosStatus()
 			overall.Add(driveStatus, desc)
+
 			countDrives++
 		}
 	}
