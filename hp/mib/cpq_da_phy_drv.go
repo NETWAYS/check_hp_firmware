@@ -73,8 +73,9 @@ const (
 )
 
 var CpqDaPhyDrvStatusMap = StringMap{
-	1: "other",
-	2: "ok",
-	3: "failed",
-	4: "predictiveFailure",
+	1:  "other",
+	2:  "ok",
+	3:  "failed",
+	4:  "predictiveFailure",
+	10: "hotspare",
 }

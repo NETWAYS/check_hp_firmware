@@ -82,7 +82,7 @@ func (d *PhysicalDrive) GetNagiosStatus() (int, string) {
 	description := fmt.Sprintf("physical drive (%-4s) model=%s serial=%s firmware=%s hours=%d",
 		d.ID, d.Model, d.Serial, d.FwRev, d.Hours)
 
-	if d.Status != "ok" {
+	if d.Status != "ok" && d.Status != "hotspare" {
 		return check.Critical, description + " - status: " + d.Status
 	}
 
