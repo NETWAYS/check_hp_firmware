@@ -44,9 +44,8 @@ linters:
      - gochecknoinits
      - godot
      - godox
-     - goerr113
      - gofumpt
-     - gomnd
+     - err113
      - mnd
      - lll
      - musttag
