@@ -159,6 +159,7 @@ func IsValidOid(oid string) error {
 	for _, c := range oid {
 		chars++
 
+		//nolint:staticcheck
 		if c != '.' && !(c >= '0' && c <= '9') {
 			return fmt.Errorf("illegal char #%d in oid: %s", chars, oid)
 		}
