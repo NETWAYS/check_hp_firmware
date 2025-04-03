@@ -18,7 +18,7 @@ func IsOid(oid string) bool {
 			if lastChar == '.' {
 				return false
 			}
-		} else if !(char >= '0' && char <= '9') {
+		} else if !(char >= '0' && char <= '9') { //nolint:staticcheck
 			return false
 		}
 

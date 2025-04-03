@@ -1,58 +1,73 @@
+version: "2"
 run:
-  timeout: 5m
   tests: false
-
-issues:
-  exclude-rules:
-    - path: 'hp/'
-      linters:
-        - nosnakecase
-        - stylecheck
-    - path: 'main.go'
-      linters:
-        - nosnakecase
-        - funlen
-        - gocognit
-    - path: 'hp/ilo/firmware.go'
-      linters:
-        - wastedassign
-        - exhaustive
-    - path: 'snmp/snmpwalk.go'
-      linters:
-        - funlen
-        - perfsprint
-    - path: 'snmp/util.go'
-      linters:
-        - perfsprint
-    - path: 'hp/mib/cpq_sm_cntrl.go'
-      linters:
-        - golint
-
 linters:
-   enable-all: true
-   disable:
-     - revive
-     - cyclop
-     - depguard
-     - dupl
-     - exhaustivestruct
-     - exhaustruct
-     - forbidigo
-     - forcetypeassert
-     - gci
-     - gochecknoglobals
-     - gochecknoinits
-     - godot
-     - godox
-     - gofumpt
-     - err113
-     - mnd
-     - lll
-     - musttag
-     - nakedret
-     - nlreturn
-     - nolintlint
-     - nonamedreturns
-     - tagliatelle
-     - varnamelen
-     - wrapcheck
+  default: all
+  disable:
+    - cyclop
+    - depguard
+    - dupl
+    - err113
+    - exhaustruct
+    - forbidigo
+    - forcetypeassert
+    - gochecknoglobals
+    - gochecknoinits
+    - godot
+    - godox
+    - lll
+    - mnd
+    - musttag
+    - nakedret
+    - nlreturn
+    - nolintlint
+    - nonamedreturns
+    - revive
+    - tagliatelle
+    - varnamelen
+    - wrapcheck
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - nosnakecase
+          - staticcheck
+        path: hp/
+      - linters:
+          - funlen
+          - gocognit
+          - nosnakecase
+        path: main.go
+      - linters:
+          - exhaustive
+          - wastedassign
+        path: hp/ilo/firmware.go
+      - linters:
+          - funlen
+          - perfsprint
+        path: snmp/snmpwalk.go
+      - linters:
+          - perfsprint
+        path: snmp/util.go
+      - linters:
+          - golint
+        path: hp/mib/cpq_sm_cntrl.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
