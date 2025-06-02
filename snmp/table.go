@@ -39,48 +39,6 @@ func (t *Table) Walk() error {
 	return nil
 }
 
-// addWalkValue parses the PDU and stored result in an indexed way
-//
-// The OID part below the table is something like:
-// 1.X.Y.Y
-//
-// 1    entry OID, just a construct to represent the row
-// X    value OID
-// Y.Y  actual index part (can be a longer chain)
-//
-// TODO: this might not apply to all tables
-func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
-	subOid := GetSubOid(data.Name, t.Oid)
-	if subOid == "" {
-		// other data in walk, ignoring it
-		return nil
-	}
-
-	parts := strings.Split(subOid, ".")
-
-	if len(parts) < 3 {
-		return fmt.Errorf("could not identify entry, column and id in oid: %s", data.Name)
-	}
-
-	// entry := parts[0]
-	column := parts[1]
-	id := strings.Join(parts[2:], ".")
-
-	if _, ok := t.Values[id]; !ok {
-		t.Values[id] = TableColumns{}
-	}
-
-	// store data in indexed tree
-	t.Values[id][column] = data
-
-	// keep list of existing columns
-	if _, ok := t.Columns[column]; !ok {
-		t.Columns[column] = column
-	}
-
-	return nil
-}
-
 func (t *Table) GetValue(id string, oid string) (interface{}, error) {
 	parts := strings.Split(oid, ".")
 	column := parts[len(parts)-1]
@@ -144,4 +102,46 @@ func SortOIDs(list []string) []string {
 	})
 
 	return list
+}
+
+// addWalkValue parses the PDU and stored result in an indexed way
+//
+// The OID part below the table is something like:
+// 1.X.Y.Y
+//
+// 1    entry OID, just a construct to represent the row
+// X    value OID
+// Y.Y  actual index part (can be a longer chain)
+//
+// TODO: this might not apply to all tables
+func (t *Table) addWalkValue(data gosnmp.SnmpPDU) error {
+	subOid := GetSubOid(data.Name, t.Oid)
+	if subOid == "" {
+		// other data in walk, ignoring it
+		return nil
+	}
+
+	parts := strings.Split(subOid, ".")
+
+	if len(parts) < 3 {
+		return fmt.Errorf("could not identify entry, column and id in oid: %s", data.Name)
+	}
+
+	// entry := parts[0]
+	column := parts[1]
+	id := strings.Join(parts[2:], ".")
+
+	if _, ok := t.Values[id]; !ok {
+		t.Values[id] = TableColumns{}
+	}
+
+	// store data in indexed tree
+	t.Values[id][column] = data
+
+	// keep list of existing columns
+	if _, ok := t.Columns[column]; !ok {
+		t.Columns[column] = column
+	}
+
+	return nil
 }

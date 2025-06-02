@@ -21,6 +21,27 @@ type FileHandler struct {
 	gosnmp.Handler
 }
 
+// Create a new file handler and initialize it with data from an io.Reader
+func NewFileHandler(r io.Reader) (h *FileHandler, err error) {
+	h = &FileHandler{}
+	err = h.ReadFromWalk(r)
+
+	return
+}
+
+// Create a new file handler and initialize it with data by reading from a file
+func NewFileHandlerFromFile(filePath string) (h *FileHandler, err error) {
+	fh, err := os.Open(filePath)
+	if err != nil {
+		err = fmt.Errorf("could not open SNMP data file: %s - %w", filePath, err)
+		return
+	}
+
+	defer fh.Close()
+
+	return NewFileHandler(fh)
+}
+
 // Read data from a io.Reader and parse it for PDUs
 //
 // They will be stored in Data for later use.
@@ -126,25 +147,4 @@ func (h *FileHandler) BulkWalk(rootOid string, walkFn gosnmp.WalkFunc) error {
 // Not yet implemented
 func (h *FileHandler) BulkWalkAll(rootOid string) (results []gosnmp.SnmpPDU, err error) {
 	panic("not implemented")
-}
-
-// Create a new file handler and initialize it with data from an io.Reader
-func NewFileHandler(r io.Reader) (h *FileHandler, err error) {
-	h = &FileHandler{}
-	err = h.ReadFromWalk(r)
-
-	return
-}
-
-// Create a new file handler and initialize it with data by reading from a file
-func NewFileHandlerFromFile(filePath string) (h *FileHandler, err error) {
-	fh, err := os.Open(filePath)
-	if err != nil {
-		err = fmt.Errorf("could not open SNMP data file: %s - %w", filePath, err)
-		return
-	}
-
-	defer fh.Close()
-
-	return NewFileHandler(fh)
 }
