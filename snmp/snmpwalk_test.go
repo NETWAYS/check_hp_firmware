@@ -2,31 +2,63 @@ package snmp
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 const testWalkLength = 242
 
 func TestReadWalk(t *testing.T) {
 	h, err := NewFileHandlerFromFile("testdata/if-mib.txt")
-	assert.NoError(t, err)
-	assert.Equal(t, testWalkLength, len(h.Data))
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+
+	if testWalkLength != len(h.Data) {
+		t.Fatalf("expected %d, got %d", testWalkLength, len(h.Data))
+	}
+
 }
 
 func TestIsValidOid(t *testing.T) {
-	assert.NoError(t, IsValidOid(".1.2.3.4.6.999999"))
-	assert.Error(t, IsValidOid(""))
-	assert.Error(t, IsValidOid("1.2.3.4"))
-	assert.Error(t, IsValidOid(".a.b.c.d"))
+	err := IsValidOid(".1.2.3.4.6.999999")
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+
+	err = IsValidOid("")
+	if err == nil {
+		t.Fatalf("expected error, got none")
+	}
+
+	err = IsValidOid("1.2.3.4")
+	if err == nil {
+		t.Fatalf("expected error, got none")
+	}
+
+	err = IsValidOid(".a.b.c.d")
+	if err == nil {
+		t.Fatalf("expected error, got none")
+	}
 }
 
 func TestEnsureValidOid(t *testing.T) {
 	oid, err := EnsureValidOid("1.2.3.4.6.999999")
-	assert.NoError(t, err)
-	assert.Equal(t, ".1.2.3.4.6.999999", oid)
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+
+	if ".1.2.3.4.6.999999" != oid {
+		t.Fatalf("expected %s, got %s", ".1.2.3.4.6.999999", oid)
+	}
 
 	oid, err = EnsureValidOid(".1.2.3.4.6.999999")
-	assert.NoError(t, err)
-	assert.Equal(t, ".1.2.3.4.6.999999", oid)
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+
+	if ".1.2.3.4.6.999999" != oid {
+		t.Fatalf("expected %s, got %s", ".1.2.3.4.6.999999", oid)
+	}
 }

@@ -1,10 +1,10 @@
 package cntlr
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/NETWAYS/go-check"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestIlo_GetNagiosStatus(t *testing.T) {
@@ -51,8 +51,14 @@ func TestIlo_GetNagiosStatus(t *testing.T) {
 	for name, tc := range testcases {
 		t.Run(name, func(t *testing.T) {
 			state, output := tc.controller.GetNagiosStatus()
-			assert.Equal(t, state, tc.expectedState)
-			assert.Contains(t, output, tc.expectedOutput)
+
+			if state != tc.expectedState {
+				t.Fatalf("expected %v, got %v", tc.expectedState, state)
+			}
+
+			if !strings.Contains(output, tc.expectedOutput) {
+				t.Fatalf("expected %v, got %v", tc.expectedOutput, output)
+			}
 		})
 	}
 }

@@ -2,8 +2,6 @@ package drive
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 const testModelA = "VO0480JFDGT"
@@ -11,17 +9,37 @@ const testModelB = "EK0800JVYPN"
 
 func TestSplitFirmware(t *testing.T) {
 	prefix, version, err := SplitFirmware("HPD5")
-	assert.Equal(t, "HPD", prefix)
-	assert.Equal(t, 5, version)
-	assert.Nil(t, err)
+
+	if "HPD" != prefix {
+		t.Fatalf("expected %s, got %s", "HPD", prefix)
+	}
+
+	if 5 != version {
+		t.Fatalf("expected %d, got %d", 5, version)
+	}
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
 
 	prefix, version, err = SplitFirmware("HPD10")
-	assert.Equal(t, "HPD", prefix)
-	assert.Equal(t, 10, version)
-	assert.Nil(t, err)
 
+	if "HPD" != prefix {
+		t.Fatalf("expected %s, got %s", "HPD", prefix)
+	}
+
+	if 10 != version {
+		t.Fatalf("expected %d, got %d", 10, version)
+	}
+
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
 	_, _, err = SplitFirmware("1HPD5")
-	assert.Error(t, err)
+
+	if err == nil {
+		t.Fatalf("expected error, got none")
+	}
 }
 
 func TestIsFirmwareFixed(t *testing.T) {
@@ -37,8 +55,14 @@ func TestIsFirmwareFixed(t *testing.T) {
 
 	for fw, expect := range testsA {
 		ok, err := IsFirmwareFixed(modelA, fw)
-		assert.Equal(t, expect, ok)
-		assert.NoError(t, err)
+
+		if ok != expect {
+			t.Fatalf("expected %v, got %v", ok, expect)
+		}
+
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
 	}
 
 	testsB := map[string]bool{
@@ -52,11 +76,20 @@ func TestIsFirmwareFixed(t *testing.T) {
 
 	for fw, expect := range testsB {
 		ok, err := IsFirmwareFixed(modelB, fw)
-		assert.Equal(t, expect, ok)
-		assert.NoError(t, err)
+
+		if ok != expect {
+			t.Fatalf("expected %v, got %v", ok, expect)
+		}
+
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
 	}
 
 	otherModel := &AffectedModel{"ABC", "nothing", "HPX11"}
 	_, err := IsFirmwareFixed(otherModel, "HPD5")
-	assert.Error(t, err)
+
+	if err == nil {
+		t.Fatalf("expected error, got none")
+	}
 }

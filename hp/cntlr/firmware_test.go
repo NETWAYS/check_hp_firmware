@@ -1,9 +1,8 @@
 package cntlr
 
 import (
+	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 type testInfo struct {
@@ -24,7 +23,13 @@ func TestIsAffected(t *testing.T) {
 
 	for fw, expect := range versions {
 		rc, info := IsAffected(fw)
-		assert.Equal(t, rc, expect.rc)
-		assert.Contains(t, info, expect.info)
+
+		if rc != expect.rc {
+			t.Fatalf("expected %v, got %v", expect.rc, rc)
+		}
+
+		if !strings.Contains(info, expect.info) {
+			t.Fatalf("expected %v, got %v", expect.info, info)
+		}
 	}
 }
