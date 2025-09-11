@@ -5,31 +5,67 @@ import (
 	"testing"
 
 	"github.com/gosnmp/gosnmp"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestIsOid(t *testing.T) {
-	assert.False(t, IsOid(""))
-	assert.False(t, IsOid(".x"))
-	assert.False(t, IsOid(".1.2.3.x"))
-	assert.False(t, IsOid(".1.2.3..4"))
-	assert.False(t, IsOid(".1.2.3.4."))
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{"", false},
+		{".x", false},
+		{".1.2.3.x", false},
+		{".1.2.3..4", false},
+		{".1.2.3.4.", false},
+		{".1.2.3.4", true},
+		{".1.2.311.44", true},
+	}
 
-	assert.True(t, IsOid(".1.2.3.4"))
-	assert.True(t, IsOid(".1.2.311.44"))
+	for _, test := range tests {
+		result := IsOid(test.input)
+		if result != test.expected {
+			t.Errorf("IsOid(%q) = %v, want %v", test.input, result, test.expected)
+		}
+	}
 }
 
 func TestIsOidPartOf(t *testing.T) {
-	assert.False(t, IsOidPartOf("", ""))
-	assert.False(t, IsOidPartOf(".1.2.3.4", ".1.1"))
-	assert.True(t, IsOidPartOf(".1.2", ".1"))
-	assert.True(t, IsOidPartOf(".1.2", ".1.2"))
+	tests := []struct {
+		oid      string
+		prefix   string
+		expected bool
+	}{
+		{"", "", false},
+		{".1.2.3.4", ".1.1", false},
+		{".1.2", ".1", true},
+		{".1.2", ".1.2", true},
+	}
+
+	for _, test := range tests {
+		result := IsOidPartOf(test.oid, test.prefix)
+		if result != test.expected {
+			t.Errorf("IsOidPartOf(%q, %q) = %v, want %v", test.oid, test.prefix, result, test.expected)
+		}
+	}
 }
 
 func TestGetSubOid(t *testing.T) {
-	assert.Equal(t, GetSubOid(".1.2.3.4", ".1.2.5"), "")
-	assert.Equal(t, GetSubOid(".1.2.3.4", ".1.2.3"), "4")
-	assert.Equal(t, GetSubOid(".1.2.3.4.5.6.7", ".1.2.3"), "4.5.6.7")
+	tests := []struct {
+		oid      string
+		prefix   string
+		expected string
+	}{
+		{".1.2.3.4", ".1.2.5", ""},
+		{".1.2.3.4", ".1.2.3", "4"},
+		{".1.2.3.4.5.6.7", ".1.2.3", "4.5.6.7"},
+	}
+
+	for _, test := range tests {
+		result := GetSubOid(test.oid, test.prefix)
+		if result != test.expected {
+			t.Errorf("GetSubOid(%q, %q) = %q, want %q", test.oid, test.prefix, result, test.expected)
+		}
+	}
 }
 
 func getEnvDefault(key string, defaultValue string) string {
