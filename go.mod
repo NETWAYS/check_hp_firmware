@@ -3,8 +3,8 @@ module github.com/NETWAYS/check_hp_firmware
 go 1.24.0
 
 require (
-	github.com/NETWAYS/go-check v0.6.3
-	github.com/gosnmp/gosnmp v1.43.0
+	github.com/NETWAYS/go-check v0.6.4
+	github.com/gosnmp/gosnmp v1.43.1
 	github.com/hashicorp/go-version v1.8.0
 )
 
