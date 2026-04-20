@@ -39,7 +39,7 @@ func (t *Table) Walk() error {
 	return nil
 }
 
-func (t *Table) GetValue(id string, oid string) (interface{}, error) {
+func (t *Table) GetValue(id string, oid string) (any, error) {
 	parts := strings.Split(oid, ".")
 	column := parts[len(parts)-1]
 

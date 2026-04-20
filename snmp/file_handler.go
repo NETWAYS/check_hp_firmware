@@ -3,6 +3,7 @@ package snmp
 import (
 	"fmt"
 	"io"
+	"maps"
 	"os"
 
 	"github.com/gosnmp/gosnmp"
@@ -55,9 +56,7 @@ func (h *FileHandler) ReadFromWalk(r io.Reader) error {
 		return err
 	}
 
-	for k, v := range pduList {
-		h.Data[k] = v
-	}
+	maps.Copy(h.Data, pduList)
 
 	return nil
 }
