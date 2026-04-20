@@ -139,7 +139,6 @@ func main() {
 
 		// Extract controller data from SNMP Table
 		controllers, err := cntlr.GetControllersFromTable(cntlrTable)
-
 		if err != nil {
 			check.ExitError(err)
 		}

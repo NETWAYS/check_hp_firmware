@@ -26,7 +26,6 @@ func GetIloInformation(client gosnmp.Handler) (ilo *Ilo, err error) {
 	ilo = &Ilo{}
 
 	iloVariables, err := client.Get(oids)
-
 	if err != nil {
 		err = fmt.Errorf("could not get SNMP data for iLO: %w", err)
 		return

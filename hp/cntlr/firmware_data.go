@@ -5,6 +5,7 @@ package cntlr
 // Effective date: 2020-04-06
 
 // Note: Always validate IsAffected() when changing values here!!
+
 const VersionAffectedRaid1 = "2.62"
 
 var VersionAffectedRaid5 = []string{"1.98", "1.99", "2.02", "2.03"}

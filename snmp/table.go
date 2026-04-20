@@ -28,7 +28,8 @@ func (t *Table) Reset() {
 func (t *Table) Walk() error {
 	t.Reset()
 
-	if err := t.Client.Walk(t.Oid, t.addWalkValue); err != nil {
+	err := t.Client.Walk(t.Oid, t.addWalkValue)
+	if err != nil {
 		return err
 	}
 
@@ -39,7 +40,7 @@ func (t *Table) Walk() error {
 	return nil
 }
 
-func (t *Table) GetValue(id string, oid string) (interface{}, error) {
+func (t *Table) GetValue(id string, oid string) (any, error) {
 	parts := strings.Split(oid, ".")
 	column := parts[len(parts)-1]
 

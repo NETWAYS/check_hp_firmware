@@ -24,7 +24,7 @@ func (t *CpqDaPhyDrvTable) ListIds() []string {
 	return t.Snmp.GetSortedOIDs()
 }
 
-func (t *CpqDaPhyDrvTable) GetValue(id string, oid string) (interface{}, error) {
+func (t *CpqDaPhyDrvTable) GetValue(id string, oid string) (any, error) {
 	return t.Snmp.GetValue(id, oid)
 }
 
