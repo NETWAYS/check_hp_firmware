@@ -28,7 +28,8 @@ func (t *Table) Reset() {
 func (t *Table) Walk() error {
 	t.Reset()
 
-	if err := t.Client.Walk(t.Oid, t.addWalkValue); err != nil {
+	err := t.Client.Walk(t.Oid, t.addWalkValue)
+	if err != nil {
 		return err
 	}
 

@@ -9,7 +9,7 @@ import (
 	"github.com/gosnmp/gosnmp"
 )
 
-// Provides a GoSNMP like data interface, but with data from a snmpwalk output
+// FileHandler provides a GoSNMP like data interface, but with data from a snmpwalk output
 //
 // Anyone can generate an output by running:
 //
@@ -17,12 +17,12 @@ import (
 //
 // Warning: This does not implement all functions of gosnmp.Handler
 type FileHandler struct {
-	Data WalkData
-
 	gosnmp.Handler
+
+	Data WalkData
 }
 
-// Create a new file handler and initialize it with data from an io.Reader
+// NewFileHandler creates a new file handler and initialize it with data from an io.Reader
 func NewFileHandler(r io.Reader) (h *FileHandler, err error) {
 	h = &FileHandler{}
 	err = h.ReadFromWalk(r)
@@ -30,7 +30,7 @@ func NewFileHandler(r io.Reader) (h *FileHandler, err error) {
 	return
 }
 
-// Create a new file handler and initialize it with data by reading from a file
+// NewFileHandlerFromFile creates a new file handler and initialize it with data by reading from a file
 func NewFileHandlerFromFile(filePath string) (h *FileHandler, err error) {
 	fh, err := os.Open(filePath)
 	if err != nil {
@@ -43,7 +43,7 @@ func NewFileHandlerFromFile(filePath string) (h *FileHandler, err error) {
 	return NewFileHandler(fh)
 }
 
-// Read data from a io.Reader and parse it for PDUs
+// ReadFromWalk reads data from a io.Reader and parse it for PDUs
 //
 // They will be stored in Data for later use.
 func (h *FileHandler) ReadFromWalk(r io.Reader) error {
@@ -61,27 +61,27 @@ func (h *FileHandler) ReadFromWalk(r io.Reader) error {
 	return nil
 }
 
-// Simulate Connect behavior by returning no error
+// Connect simulates Connect behavior by returning no error
 func (h *FileHandler) Connect() error {
 	return nil
 }
 
-// Simulate ConnectIPv4 behavior by returning no error
+// ConnectIPv4 simulates ConnectIPv4 behavior by returning no error
 func (h *FileHandler) ConnectIPv4() error {
 	return nil
 }
 
-// Simulate ConnectIPv6 behavior by returning no error
+// ConnectIPv6 simulates ConnectIPv6 behavior by returning no error
 func (h *FileHandler) ConnectIPv6() error {
 	return nil
 }
 
-// Simulate Close behavior by returning no error
+// Close simulates Close behavior by returning no error
 func (h *FileHandler) Close() error {
 	return nil
 }
 
-// Simulating Get() behavior by searching read in data
+// Get simulates Get() behavior by searching read in data
 func (h *FileHandler) Get(oids []string) (result *gosnmp.SnmpPacket, err error) {
 	result = &gosnmp.SnmpPacket{
 		Version: gosnmp.Version2c,
@@ -101,18 +101,18 @@ func (h *FileHandler) Get(oids []string) (result *gosnmp.SnmpPacket, err error) 
 	return
 }
 
-// Not yet implemented
+// GetBulk is not yet implemented
 func (h *FileHandler) GetBulk(oids []string, nonRepeaters uint8,
 	maxRepetitions uint32) (result *gosnmp.SnmpPacket, err error) {
 	panic("not implemented")
 }
 
-// Not yet implemented
+// GetNext is not yet implemented
 func (h *FileHandler) GetNext(oids []string) (result *gosnmp.SnmpPacket, err error) {
 	panic("not implemented")
 }
 
-// Simulating Walk() behavior by searching read in data
+// Walk simulates Walk() behavior by searching read in data
 func (h *FileHandler) Walk(rootOid string, walkFn gosnmp.WalkFunc) (err error) {
 	rootOid, err = EnsureValidOid(rootOid)
 	if err != nil {
@@ -133,17 +133,17 @@ func (h *FileHandler) Walk(rootOid string, walkFn gosnmp.WalkFunc) (err error) {
 	return
 }
 
-// Not yet implemented
+// WalkAll is not yet implemented
 func (h *FileHandler) WalkAll(rootOid string) (results []gosnmp.SnmpPDU, err error) {
 	panic("not implemented")
 }
 
-// Not yet implemented
+// BulkWalk is not yet implemented
 func (h *FileHandler) BulkWalk(rootOid string, walkFn gosnmp.WalkFunc) error {
 	panic("not implemented")
 }
 
-// Not yet implemented
+// BulkWalkAll is not yet implemented
 func (h *FileHandler) BulkWalkAll(rootOid string) (results []gosnmp.SnmpPDU, err error) {
 	panic("not implemented")
 }
