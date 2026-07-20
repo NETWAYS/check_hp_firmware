@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/NETWAYS/go-check v0.6.4
-	github.com/gosnmp/gosnmp v1.43.2
+	github.com/gosnmp/gosnmp v1.44.0
 	github.com/hashicorp/go-version v1.9.0
 )
 

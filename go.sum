@@ -2,8 +2,8 @@ github.com/NETWAYS/go-check v0.6.4 h1:4WETSVNZNEP0Yudcp5xlvxq6RGn920cmUKq4fz/P1G
 github.com/NETWAYS/go-check v0.6.4/go.mod h1:8/GWnq8SirreAixgRmcp82JG16NnEl38rHq9phICy9s=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/gosnmp/gosnmp v1.43.2 h1:F9loz6uMCNtIQj0RNO5wz/mZ+FZt2WyNKJYOvw+Zosw=
-github.com/gosnmp/gosnmp v1.43.2/go.mod h1:smHIwoaqr1M+HTAEd7+mKkPs8lp3Lf/U+htPUql1Q3c=
+github.com/gosnmp/gosnmp v1.44.0 h1:6SUNAJWjSu/j05rm+M1G39NoPW8jvShiFqYf6XNnM+k=
+github.com/gosnmp/gosnmp v1.44.0/go.mod h1:30xQDXCVXXehh/xwRd62+JwIizwc3HZaBi4F/Hv5/0o=
 github.com/hashicorp/go-version v1.9.0 h1:CeOIz6k+LoN3qX9Z0tyQrPtiB1DFYRPfCIBtaXPSCnA=
 github.com/hashicorp/go-version v1.9.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
