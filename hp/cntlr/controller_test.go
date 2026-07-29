@@ -10,7 +10,7 @@ import (
 func TestIlo_GetNagiosStatus(t *testing.T) {
 	testcases := map[string]struct {
 		controller     Controller
-		expectedState  int
+		expectedState  check.Status
 		expectedOutput string
 	}{
 		"status-ok": {

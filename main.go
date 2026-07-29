@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	// These get filled at build time with the proper vaules
+	// These get filled at build time with the proper values
 	version = "development"
 	commit  = "HEAD"
 	date    = "latest"
@@ -70,7 +70,6 @@ func main() {
 		countDrives      int
 		driveTable       *drive.CpqDaPhyDrvTable
 		err              error
-		summary          string
 	)
 
 	// Initialize SNMP Client
@@ -134,7 +133,7 @@ func main() {
 		}
 
 		if len(cntlrTable.Snmp.Values) == 0 {
-			check.ExitRaw(3, "No HP controller data found!")
+			check.Exit(check.Unknown, "No HP controller data found!")
 		}
 
 		// Extract controller data from SNMP Table
@@ -160,7 +159,7 @@ func main() {
 		}
 
 		if len(driveTable.Snmp.Values) == 0 {
-			check.ExitRaw(3, "No HP drive data found!")
+			check.Exit(check.Unknown, "No HP drive data found!")
 		}
 
 		// Extract drive data from SNMP Table
@@ -178,18 +177,7 @@ func main() {
 		}
 	}
 
-	// Get the overall status for all subchecks
-	status := overall.GetStatus()
+	overall.SetOKSummary(fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives))
 
-	switch status {
-	case check.OK:
-		summary = fmt.Sprintf("All %d controllers and %d drives seem fine", countControllers, countDrives)
-	case check.Warning:
-		summary = fmt.Sprintf("Found %d warnings", overall.GetStatus())
-	case check.Critical:
-		summary = fmt.Sprintf("Found %d critical problems", overall.GetStatus())
-	}
-
-	overall.Summary = summary
-	check.ExitRaw(status, overall.GetOutput())
+	check.Exit(overall.GetStatus(), overall.GetOutput())
 }
