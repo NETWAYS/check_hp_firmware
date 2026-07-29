@@ -27,7 +27,7 @@ func TestPhysicalDrive_GetNagiosStatus(t *testing.T) {
 	}
 
 	var (
-		status int
+		status check.Status
 		info   string
 	)
 

@@ -3,10 +3,12 @@ package cntlr
 import (
 	"strings"
 	"testing"
+
+	"github.com/NETWAYS/go-check"
 )
 
 type testInfo struct {
-	rc   int
+	rc   check.Status
 	info string
 }
 

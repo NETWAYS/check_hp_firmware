@@ -26,7 +26,7 @@ func init() {
 
 // IsAffected validates the given version against known affected versions.
 // Note: we can't validate against existing logical drives at the moment
-func IsAffected(firmware string) (int, string) {
+func IsAffected(firmware string) (check.Status, string) {
 	firmwareVersion, _ := version.NewVersion(firmware)
 	fixedVersion, _ := version.NewVersion(VersionFixed)
 

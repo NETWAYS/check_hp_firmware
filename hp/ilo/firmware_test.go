@@ -12,7 +12,7 @@ import (
 func TestIlo_GetNagiosStatus(t *testing.T) {
 	testcases := map[string]struct {
 		ilo            Ilo
-		expectedState  int
+		expectedState  check.Status
 		expectedOutput string
 	}{
 		"too-old": {
